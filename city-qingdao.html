@@ -636,8 +636,8 @@
                 card.addEventListener('click', function() {
                     if (isEditMode) return;
                     var title = this.getAttribute('data-title');
-                    var image = this.getAttribute('data-image');
-                    var desc = this.getAttribute('data-desc');
+                    var image = this.querySelector('img').src;
+                    var desc = this.querySelector('.food-desc').textContent;
                     openModal(title, image, desc);
                 });
             });

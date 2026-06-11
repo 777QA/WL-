@@ -573,8 +573,8 @@
                         if (isEditMode) return;
                         if (e.target.closest('.replace-img-btn')) return;
                         var title = this.getAttribute('data-title');
-                        var image = this.getAttribute('data-image');
-                        var desc = this.getAttribute('data-desc');
+                        var image = this.querySelector('img').src;
+                        var desc = this.querySelector('.attraction-desc').textContent;
                         openModal(title, image, desc);
                     });
                 });
@@ -584,8 +584,8 @@
                         if (isEditMode) return;
                         if (e.target.closest('.replace-img-btn')) return;
                         var title = this.getAttribute('data-title');
-                        var image = this.getAttribute('data-image');
-                        var desc = this.getAttribute('data-desc');
+                        var image = this.querySelector('img').src;
+                        var desc = this.querySelector('.food-desc').textContent;
                         openModal(title, image, desc);
                     });
                 });
