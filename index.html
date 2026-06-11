@@ -1,0 +1,3245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <script>if('scrollRestoration' in history) history.scrollRestoration='manual';</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>山止川行 - 山东文旅平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink-green: #228B22;
+            --ochre: #D4A373;
+            --warm-white: #FAF8F5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            backdrop-filter: none;
+            border-radius: 30px;
+            box-shadow: none;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--ink-green);
+            text-decoration: none;
+        }
+
+        .navbar .logo svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .navbar nav {
+            display: none;
+        }
+
+        @media (min-width: 900px) {
+            .navbar nav {
+                display: flex;
+                background: rgba(0, 0, 0, 0.03);
+                padding: 0.25rem;
+                border-radius: 25px;
+            }
+        }
+
+        .navbar nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .navbar nav a:hover {
+            background: rgba(34, 139, 34, 0.1);
+            color: var(--ink-green);
+        }
+
+        .navbar nav a.active {
+            background: var(--ink-green);
+            color: white;
+        }
+
+        .navbar-actions {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .navbar-actions button {
+            background: rgba(34, 139, 34, 0.1);
+            border: 1px solid rgba(34, 139, 34, 0.3);
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--ink-green);
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .navbar-actions button:hover {
+            background: rgba(34, 139, 34, 0.2);
+            color: var(--ink-green);
+        }
+
+        .hero {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-slides {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.4) 80%, rgba(0,0,0,0.6) 100%);
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 10;
+        }
+
+        .hero-title {
+            font-family: 'Ma Shan Zheng', serif;
+            font-size: 8rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 4px 30px rgba(0,0,0,0.6);
+            letter-spacing: 0.1em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.6rem;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-weight: 300;
+            opacity: 0.95;
+            letter-spacing: 0.4em;
+            margin-bottom: 1.25rem;
+        }
+
+        .hero-desc {
+            font-size: 0.85rem;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            opacity: 0.8;
+            letter-spacing: 0.25em;
+            font-weight: 300;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .scroll-circle svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            opacity: 0.8;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        .hero-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            font-size: 1.5rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-nav-prev { left: 1rem; }
+        .hero-nav-next { right: 1rem; }
+
+        .hero-indicators {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .indicator-dot.active {
+            width: 24px;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .section {
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            color: #333;
+            font-size: 1.5rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .gallery-nav-prev { left: -20px; }
+        .gallery-nav-next { right: -20px; }
+
+        .gallery-wrapper {
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .gallery-track {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            border-radius: 20px;
+        }
+
+        .gallery-item {
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .gallery-item.main {
+            flex: 0 0 45%;
+            max-width: 500px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .gallery-item.side {
+            flex: 0 0 18%;
+            max-width: 200px;
+            opacity: 0.7;
+            transform: scale(0.95);
+        }
+
+        .gallery-item.side:hover { opacity: 0.9; }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-item.main img { height: 350px; }
+        .gallery-item.side img { height: 280px; }
+
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+        }
+
+        .gallery-item-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .gallery-item-desc {
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+
+        .gallery-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .gallery-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .gallery-dot.active {
+            width: 25px;
+            border-radius: 5px;
+            background: var(--ink-green);
+        }
+
+        .guides-section {
+            background: var(--warm-white);
+            padding: 2rem 2rem;
+        }
+
+        .guides-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .guides-grid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: -30px;
+            padding: 10px 20px;
+            position: relative;
+            min-height: 700px;
+        }
+
+        .guide-card {
+            position: absolute;
+            transition: all 0.5s ease;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transform-style: preserve-3d;
+        }
+
+        .guide-card.flipped {
+            transform: translateX(0) scale(1) rotateY(180deg) !important;
+            z-index: 100 !important;
+            opacity: 1 !important;
+            width: 480px !important;
+            height: 660px !important;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .guide-card-front,
+        .guide-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 16px;
+        }
+
+        .guide-card-front {
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .guide-card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, var(--ochre) 0%, #d4a373 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem;
+            color: white;
+            border-radius: 16px;
+        }
+
+        .guide-card-back h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .guide-card-back p {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 0.3rem;
+            opacity: 0.95;
+        }
+
+        .guide-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .guide-card.layer-0 {
+            width: 280px;
+            height: 420px;
+            transform: translateX(-360px) scale(0.8);
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        .guide-card.layer-1 {
+            width: 340px;
+            height: 500px;
+            transform: translateX(-185px) scale(0.9);
+            z-index: 2;
+            opacity: 0.8;
+        }
+
+        .guide-card.layer-2 {
+            width: 420px;
+            height: 600px;
+            transform: translateX(0) scale(1);
+            z-index: 3;
+            opacity: 1;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        }
+
+        .guide-card.layer-3 {
+            width: 340px;
+            height: 500px;
+            transform: translateX(185px) scale(0.9);
+            z-index: 2;
+            opacity: 0.8;
+        }
+
+        .guide-card.layer-4 {
+            width: 280px;
+            height: 420px;
+            transform: translateX(360px) scale(0.8);
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        .guide-card.layer-hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .guide-card:hover {
+            opacity: 1 !important;
+        }
+
+        .guide-replace-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 0.5rem 1rem;
+            background: rgba(212, 163, 115, 0.9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: none;
+            z-index: 5;
+            white-space: nowrap;
+        }
+
+        .guide-replace-btn:hover {
+            background: var(--ochre);
+        }
+
+        body.guides-edit-mode .guide-replace-btn {
+            display: none;
+        }
+
+        body.guides-edit-mode .guide-card {
+            cursor: default;
+        }
+
+        body.guides-edit-mode .guide-card.flipped {
+            cursor: default;
+        }
+
+        .guides-edit-btn {
+            display: none;
+            margin: 0 auto 1rem;
+            padding: 0.5rem 1.5rem;
+            background: var(--ochre);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .guides-edit-btn:hover {
+            background: #b8860b;
+        }
+
+        .guides-save-btn {
+            display: none;
+            margin: 1rem auto 0;
+            padding: 0.5rem 1.5rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .guides-save-btn:hover {
+            background: #45a049;
+        }
+
+        body.guides-edit-mode .guides-save-btn {
+            display: none;
+        }
+
+        .guide-card-tag {
+            display: inline-block;
+            padding: 0.3rem 0.9rem;
+            background: rgba(212, 163, 115, 0.1);
+            color: var(--ochre);
+            font-size: 0.9rem;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+        }
+
+        .guide-card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .guide-card-desc {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .guide-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: var(--ink-green);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background 0.3s;
+            margin-top: 2rem;
+        }
+
+        .btn:hover {
+            background: #1a6b1a;
+        }
+
+        .btn-container {
+            text-align: center;
+        }
+
+        .map-section {
+            background: var(--warm-white);
+        }
+
+        .map-wrapper {
+            max-width: 1500px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            padding: 1rem 3rem;
+        }
+
+        .map-left-panel {
+            position: relative;
+            min-height: 750px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+        }
+
+        .map-ring-nav {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .map-ring-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ochre) 0%, #d4a373 100%);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(212, 163, 115, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .map-ring-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(212, 163, 115, 0.6);
+        }
+
+        .map-cards-container {
+            position: relative;
+            width: 100%;
+            height: 720px;
+            perspective: 800px;
+            margin-left: 0;
+        }
+
+        .map-card {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            transform-origin: center center;
+        }
+
+        .map-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .map-card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+        }
+
+        .map-card-info h4 {
+            margin: 0 0 0.3rem 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .map-card-info p {
+            margin: 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .map-spot-detail {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            padding: 1.2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 20;
+        }
+
+        .map-spot-detail.active {
+            bottom: 10px;
+            opacity: 1;
+        }
+
+        .map-spot-detail h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--ochre);
+        }
+
+        .map-spot-detail .detail-desc {
+            margin: 0 0 1rem 0;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .map-spot-detail .detail-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .map-spot-detail .detail-tag {
+            padding: 0.3rem 0.7rem;
+            background: #f5f5f5;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #555;
+        }
+
+        .map-replace-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 0.4rem 0.8rem;
+            background: rgba(212, 163, 115, 0.9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: none;
+            z-index: 5;
+            white-space: nowrap;
+        }
+
+        .map-replace-btn:hover {
+            background: var(--ochre);
+        }
+
+        body.map-edit-mode .map-replace-btn {
+            display: none;
+        }
+
+        body.map-edit-mode .map-card {
+            cursor: default;
+        }
+
+        .map-edit-btn {
+            display: none;
+            margin: 0 auto 1rem;
+            padding: 0.5rem 1.5rem;
+            background: var(--ochre);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .map-edit-btn:hover {
+            background: #b8860b;
+        }
+
+        .map-save-btn {
+            display: none;
+            margin: 1rem auto 0;
+            padding: 0.5rem 1.5rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .map-save-btn:hover {
+            background: #45a049;
+        }
+
+        body.map-edit-mode .map-save-btn {
+            display: none;
+        }
+
+        .map-spot-list {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .map-spot-list h4 {
+            margin: 0 0 0.8rem 0;
+            font-size: 1.1rem;
+            color: #333;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .map-spot-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.6rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 0.4rem;
+        }
+
+        .map-spot-item:hover {
+            background: #f8f9fa;
+            transform: translateX(4px);
+        }
+
+        .map-spot-item img {
+            width: 45px;
+            height: 45px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .spot-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .spot-location {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .map-right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .map-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            min-height: 320px;
+        }
+
+        .shandong-map-svg {
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .timeline-section {
+            background: linear-gradient(180deg, #faf8f5 0%, #f5f0e8 100%);
+            padding: 3rem 0;
+        }
+
+        .timeline-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 2rem;
+        }
+
+        .timeline-sidebar {
+            width: 80px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 39px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #8B6914 0%, #ddd 100%);
+        }
+
+        .timeline-nodes {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .timeline-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .node-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid #8B6914;
+            background: #fff;
+            transition: all 0.3s;
+        }
+
+        .timeline-node.active .node-dot {
+            width: 20px;
+            height: 20px;
+            background: #8B6914;
+            box-shadow: 0 0 15px rgba(139, 105, 20, 0.5);
+        }
+
+        .timeline-node.passed .node-dot {
+            background: #333;
+            border-color: #333;
+        }
+
+        .timeline-node.future .node-dot {
+            background: #fff;
+            border-color: #ddd;
+        }
+
+        .node-label {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: #666;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            white-space: nowrap;
+        }
+
+        .timeline-node.active .node-label {
+            color: #8B6914;
+            font-weight: 600;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-period {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .timeline-period.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .period-content {
+            max-width: 900px;
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .period-year {
+            font-size: 0.9rem;
+            color: #8B6914;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .period-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-family: 'Ma Shan Zheng', serif;
+        }
+
+        .period-desc {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .period-highlights {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .highlight-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .highlight-card h4 {
+            margin: 0.8rem 0 0.5rem 0;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .highlight-card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .highlight-card {
+            position: relative;
+        }
+
+        .timeline-replace-btn {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.3rem 0.7rem;
+            background: rgba(212, 163, 115, 0.9);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: none;
+            z-index: 5;
+            white-space: nowrap;
+        }
+
+        .timeline-replace-btn:hover {
+            background: var(--ochre);
+        }
+
+        body.timeline-edit-mode .timeline-replace-btn {
+            display: none;
+        }
+
+        .timeline-edit-btn {
+            display: none !important;
+            margin: 0 auto 1rem;
+            padding: 0.5rem 1.5rem;
+            background: var(--ochre);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .timeline-edit-btn:hover {
+            background: #b8860b;
+        }
+
+        .timeline-save-btn {
+            display: none;
+            margin: 1rem auto 0;
+            padding: 0.5rem 1.5rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .timeline-save-btn:hover {
+            background: #45a049;
+        }
+
+        body.timeline-edit-mode .timeline-save-btn {
+            display: none;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-copyright {
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+
+        .footer-disclaimer {
+            margin-top: 1rem;
+            opacity: 0.6;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 900px) {
+            .timeline-container {
+                flex-direction: column;
+            }
+            .timeline-sidebar {
+                position: static;
+                width: 100%;
+                margin-bottom: 2rem;
+            }
+            .timeline-nodes {
+                flex-direction: row;
+                justify-content: center;
+            }
+            .timeline-line {
+                display: none;
+            }
+            .node-label {
+                writing-mode: horizontal-tb;
+            }
+            .period-highlights {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hero-edit-btn {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            z-index: 30;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-edit-btn:hover {
+            background: rgba(0,0,0,0.7);
+        }
+
+        .hero-edit-btn.active {
+            background: var(--ink-green);
+        }
+
+        .hero-slide .replace-btn {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 25;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: 2px dashed rgba(255,255,255,0.8);
+            padding: 20px 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-slide .replace-btn:hover {
+            background: rgba(34, 139, 34, 0.8);
+            border-color: white;
+        }
+
+        body.edit-mode .hero-slide .replace-btn {
+            display: none;
+        }
+
+        body.edit-mode .hero-slide {
+            cursor: pointer;
+        }
+
+        body.edit-mode .hero-slide:hover .replace-btn {
+            background: rgba(34, 139, 34, 0.8);
+            border-color: white;
+        }
+
+        .hero-slide .slide-index {
+            display: none;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 25;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        body.edit-mode .hero-slide .slide-index {
+            display: block;
+        }
+
+        .cities-edit-btn {
+            display: none;
+            margin: 0 auto 1rem;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .cities-edit-btn:hover {
+            background: rgba(0,0,0,0.7);
+        }
+
+        .cities-edit-btn.active {
+            background: var(--ink-green);
+        }
+
+        .gallery-item .city-replace-btn {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: 2px dashed rgba(255,255,255,0.8);
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+        }
+
+        .gallery-item .city-replace-btn:hover {
+            background: rgba(34, 139, 34, 0.8);
+            border-color: white;
+        }
+
+        body.cities-edit-mode .gallery-item .city-replace-btn {
+            display: none;
+        }
+
+        body.cities-edit-mode .gallery-item {
+            pointer-events: none;
+        }
+
+        body.cities-edit-mode .gallery-item .city-replace-btn {
+            pointer-events: none;
+        }
+
+        body.cities-edit-mode .gallery-nav {
+            pointer-events: auto;
+        }
+
+        .save-edit-btn {
+            position: absolute;
+            top: 80px;
+            right: 120px;
+            z-index: 30;
+            background: var(--ink-green);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        .save-edit-btn:hover {
+            background: #1a6b1a;
+        }
+
+        body.edit-mode .save-edit-btn,
+        body.cities-edit-mode .save-edit-btn {
+            display: none;
+        }
+
+        /* 浮动未保存提示条 */
+        .unsaved-bar {
+            display: none !important;
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            padding: 14px 24px;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .unsaved-bar.visible {
+            transform: translateY(0);
+        }
+
+        .unsaved-bar-icon {
+            font-size: 1.2rem;
+        }
+
+        .unsaved-bar-text {
+            letter-spacing: 0.05em;
+        }
+
+        .unsaved-bar .unsaved-save-btn {
+            background: white;
+            color: #f57c00;
+            border: none;
+            padding: 8px 28px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .unsaved-bar .unsaved-save-btn:hover {
+            background: #fff3e0;
+            transform: scale(1.05);
+        }
+
+        /* 浮动保存按钮（右下角醒目） */
+        .floating-save-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9997;
+            background: var(--ink-green);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(34, 139, 34, 0.4);
+            transition: all 0.3s;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .floating-save-btn:hover {
+            background: #1a6b1a;
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(34, 139, 34, 0.5);
+        }
+
+        .floating-save-btn.visible {
+            display: flex;
+        }
+
+        .floating-save-btn.has-unsaved {
+            animation: pulse-save 2s infinite;
+        }
+
+        @keyframes pulse-save {
+            0%, 100% { box-shadow: 0 4px 20px rgba(34, 139, 34, 0.4); }
+            50% { box-shadow: 0 4px 30px rgba(34, 139, 34, 0.7), 0 0 0 8px rgba(34, 139, 34, 0.15); }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-80px);
+            z-index: 9999;
+            background: #228B22;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 800px) {
+            .map-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .hero-title {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <svg viewBox="0 0 40 40" fill="none">
+                    <path d="M10 35 L10 20 Q10 15 15 15 L20 15 Q25 15 25 20 L25 30 Q25 35 20 35 L15 35 Q10 35 10 30 Z" fill="#228B22"/>
+                    <path d="M25 35 L25 10 Q25 5 30 5 L35 5" stroke="#228B22" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="32" cy="12" r="3" fill="#228B22"/>
+                </svg>
+                山止川行
+            </a>
+            <nav>
+                <a href="#hero" class="active">首页</a>
+                <a href="#cities">魅力城市</a>
+                <a href="#guides">攻略广场</a>
+                <a href="#map-section">旅游地图</a>
+                <a href="#timeline">历史时间轴</a>
+            </nav>
+            <div class="navbar-actions">
+                <button id="search-btn">Search</button>
+                <button>❤️</button>
+                <button>☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="toast" id="save-toast">保存成功！</div>
+
+    <!-- 浮动未保存提示条 -->
+    <div class="unsaved-bar" id="unsaved-bar">
+        <span class="unsaved-bar-icon">⚠️</span>
+        <span class="unsaved-bar-text">您有未保存的更改</span>
+        <button class="unsaved-save-btn" onclick="saveAllEdits()">保存</button>
+    </div>
+
+    <!-- 浮动保存按钮（右下角） -->
+    <button class="floating-save-btn" id="floating-save-btn" onclick="saveAllEdits()" title="保存修改">💾</button>
+
+    <section id="hero" class="hero">
+        <button class="hero-edit-btn" id="hero-edit-btn" onclick="toggleEditMode()">编辑模式</button>
+        <button class="save-edit-btn" id="save-edit-btn" onclick="saveAllEdits()">保存修改</button>
+        <input type="file" id="hero-file-input" accept="image/*" style="display:none;">
+        <div class="hero-slides">
+            <div class="hero-slide active">
+                <span class="slide-index">第1张</span>
+                <img src="images/index/hero/hero-0.jpg" alt="威海大相框" class="hero-image">
+                <div class="hero-overlay"></div>
+                <button class="replace-btn" data-index="0">点击替换图片</button>
+            </div>
+            <div class="hero-slide">
+                <span class="slide-index">第2张</span>
+                <img src="images/index/hero/hero-1.jpg" alt="海滩日落风力发电机" class="hero-image">
+                <div class="hero-overlay"></div>
+                <button class="replace-btn" data-index="1">点击替换图片</button>
+            </div>
+            <div class="hero-slide">
+                <span class="slide-index">第3张</span>
+                <img src="images/index/hero/hero-2.jpg" alt="泰山日出古建筑" class="hero-image">
+                <div class="hero-overlay"></div>
+                <button class="replace-btn" data-index="2">点击替换图片</button>
+            </div>
+            <div class="hero-slide">
+                <span class="slide-index">第4张</span>
+                <img src="images/index/hero/hero-3.jpg" alt="青岛啤酒厂" class="hero-image">
+                <div class="hero-overlay"></div>
+                <button class="replace-btn" data-index="3">点击替换图片</button>
+            </div>
+            <div class="hero-slide">
+                <span class="slide-index">第5张</span>
+                <img src="images/index/hero/hero-4.jpg" alt="海滩日落人群" class="hero-image">
+                <div class="hero-overlay"></div>
+                <button class="replace-btn" data-index="4">点击替换图片</button>
+            </div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">山止川行</h1>
+            <p class="hero-subtitle">Shandong Travel</p>
+            <p class="hero-desc">Top Travel Destinations in China</p>
+        </div>
+        <button class="hero-nav hero-nav-prev" onclick="prevSlide()">‹</button>
+        <button class="hero-nav hero-nav-next" onclick="nextSlide()">›</button>
+        <div class="scroll-indicator">
+            <div class="scroll-circle">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+            </div>
+        </div>
+        <div class="hero-indicators">
+            <span class="indicator-dot active" onclick="goToSlide(0)"></span>
+            <span class="indicator-dot" onclick="goToSlide(1)"></span>
+            <span class="indicator-dot" onclick="goToSlide(2)"></span>
+            <span class="indicator-dot" onclick="goToSlide(3)"></span>
+            <span class="indicator-dot" onclick="goToSlide(4)"></span>
+        </div>
+    </section>
+
+    <section id="cities" class="section">
+        <h2 class="section-title">四大魅力城市</h2>
+        <p class="section-subtitle">探索山东最具代表性的旅游目的地</p>
+        <button class="cities-edit-btn" id="cities-edit-btn" onclick="toggleCitiesEditMode()">编辑模式</button>
+        <input type="file" id="cities-file-input" accept="image/*" style="display:none;">
+        
+        <div class="gallery-container" id="gallery-container">
+            <button class="gallery-nav gallery-nav-prev" onclick="galleryPrev()">‹</button>
+            <div class="gallery-wrapper">
+                <div class="gallery-track" id="gallery-track">
+                    <a href="city-jinan.html" class="gallery-item main" data-city="jinan">
+                        <img src="images/index/cities/jinan.jpg" alt="济南">
+                        <div class="gallery-item-overlay">
+                            <span class="gallery-item-title">济南</span>
+                            <span class="gallery-item-desc">泉城济南，天下第一泉</span>
+                        </div>
+                        <button class="city-replace-btn" data-city="jinan">替换图片</button>
+                    </a>
+                    <a href="city-qingdao.html" class="gallery-item side" data-city="qingdao">
+                        <img src="images/index/cities/qingdao.jpg" alt="青岛">
+                        <div class="gallery-item-overlay">
+                            <span class="gallery-item-title">青岛</span>
+                        </div>
+                        <button class="city-replace-btn" data-city="qingdao">替换图片</button>
+                    </a>
+                    <a href="city-taian.html" class="gallery-item side" data-city="taian">
+                        <img src="images/index/cities/taian.jpg" alt="泰安">
+                        <div class="gallery-item-overlay">
+                            <span class="gallery-item-title">泰安</span>
+                        </div>
+                        <button class="city-replace-btn" data-city="taian">替换图片</button>
+                    </a>
+                    <a href="city-detail.html" class="gallery-item side" data-city="weihai">
+                        <img src="images/index/cities/weihai.jpg" alt="威海">
+                        <div class="gallery-item-overlay">
+                            <span class="gallery-item-title">威海</span>
+                        </div>
+                        <button class="city-replace-btn" data-city="weihai">替换图片</button>
+                    </a>
+                </div>
+            </div>
+            <button class="gallery-nav gallery-nav-next" onclick="galleryNext()">›</button>
+        </div>
+        <div class="gallery-indicators" id="gallery-indicators">
+            <span class="gallery-dot active" onclick="galleryGoTo(0)"></span>
+            <span class="gallery-dot" onclick="galleryGoTo(1)"></span>
+            <span class="gallery-dot" onclick="galleryGoTo(2)"></span>
+            <span class="gallery-dot" onclick="galleryGoTo(3)"></span>
+        </div>
+    </section>
+
+    <section id="guides" class="section guides-section">
+        <h2 class="section-title">精选攻略</h2>
+        <p class="section-subtitle">达人分享的旅行秘籍</p>
+        <button class="guides-edit-btn" id="guides-edit-btn" onclick="toggleGuidesEditMode()">编辑模式</button>
+        <input type="file" id="guides-file-input" accept="image/*" style="display:none;">
+        
+        <div class="guides-container" style="max-width:1200px;margin:0 auto;position:relative;padding:1rem 0;">
+            <button class="gallery-nav gallery-nav-prev" onclick="guidePrev()">‹</button>
+            <div class="guides-grid">
+                <div class="guide-card" data-index="0" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-0.jpg" alt="济南三日游">
+                        <button class="guide-replace-btn" data-guide="guide-img-0">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>济南三日游</h3>
+                        <p>Day 1: 趵突泉→大明湖→芙蓉街</p>
+                        <p>Day 2: 千佛山→山东博物馆</p>
+                        <p>Day 3: 曲水亭街→泉城广场</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="1" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-1.jpg" alt="青岛海滨之旅">
+                        <button class="guide-replace-btn" data-guide="guide-img-1">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>青岛海滨之旅</h3>
+                        <p>Day 1: 八大关→栈桥</p>
+                        <p>Day 2: 崂山风景区</p>
+                        <p>Day 3: 五四广场→奥帆中心</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="2" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-2.jpg" alt="泰山登顶攻略">
+                        <button class="guide-replace-btn" data-guide="guide-img-2">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>泰山登顶攻略</h3>
+                        <p>路线：红门→中天门→南天门</p>
+                        <p>时间：约4-6小时</p>
+                        <p>最佳：凌晨出发看日出</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="3" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-3.jpg" alt="威海亲子游">
+                        <button class="guide-replace-btn" data-guide="guide-img-3">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>威海亲子游</h3>
+                        <p>刘公岛景区</p>
+                        <p>国际海水浴场</p>
+                        <p>那香海钻石沙滩</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="4" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-4.jpg" alt="山东美食之旅">
+                        <button class="guide-replace-btn" data-guide="guide-img-4">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>山东美食之旅</h3>
+                        <p>济南：把子肉、泉水豆腐</p>
+                        <p>青岛：海鲜、鲅鱼水饺</p>
+                        <p>泰安：泰山煎饼、赤鳞鱼</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="5" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-5.jpg" alt="山东自驾游">
+                        <button class="guide-replace-btn" data-guide="guide-img-5">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>山东沿海自驾</h3>
+                        <p>路线：青岛→威海→烟台</p>
+                        <p>全程：约300公里</p>
+                        <p>最佳：沿海公路风光</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="6" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-6.jpg" alt="济南夜游">
+                        <button class="guide-replace-btn" data-guide="guide-img-6">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>济南夜游攻略</h3>
+                        <p>大明湖夜景</p>
+                        <p>芙蓉街美食</p>
+                        <p>泉城广场灯光秀</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="7" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-7.jpg" alt="青岛啤酒节">
+                        <button class="guide-replace-btn" data-guide="guide-img-7">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>青岛啤酒节</h3>
+                        <p>时间：每年8月</p>
+                        <p>地点：黄岛金沙滩</p>
+                        <p>亮点：啤酒大棚、演出</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="8" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-8.jpg" alt="曲阜孔庙">
+                        <button class="guide-replace-btn" data-guide="guide-img-8">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>曲阜文化之旅</h3>
+                        <p>孔庙→孔府→孔林</p>
+                        <p>感受儒家文化千年传承</p>
+                        <p>最佳：春秋两季</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="9" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-9.jpg" alt="烟台蓬莱">
+                        <button class="guide-replace-btn" data-guide="guide-img-9">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>烟台蓬莱仙境</h3>
+                        <p>蓬莱阁→长岛→养马岛</p>
+                        <p>海市蜃楼传说之地</p>
+                        <p>推荐：夏季避暑</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="10" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-10.jpg" alt="日照海滨">
+                        <button class="guide-replace-btn" data-guide="guide-img-10">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>日照阳光海岸</h3>
+                        <p>万平口→灯塔广场→东夷小镇</p>
+                        <p>日出先照之城</p>
+                        <p>推荐：赶海体验</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="11" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-11.jpg" alt="潍坊风筝节">
+                        <button class="guide-replace-btn" data-guide="guide-img-11">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>潍坊风筝之都</h3>
+                        <p>时间：每年4月</p>
+                        <p>杨家埠民间艺术大观园</p>
+                        <p>体验非遗风筝扎制</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="12" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-12.jpg" alt="淄博陶瓷">
+                        <button class="guide-replace-btn" data-guide="guide-img-12">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>淄博陶瓷文化</h3>
+                        <p>中国陶瓷琉璃馆</p>
+                        <p>博山琉璃→周村古商城</p>
+                        <p>体验手作陶瓷乐趣</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="13" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-13.jpg" alt="东营黄河口">
+                        <button class="guide-replace-btn" data-guide="guide-img-13">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>东营黄河入海口</h3>
+                        <p>黄蓝交汇奇观</p>
+                        <p>黄河口生态旅游区</p>
+                        <p>观鸟天堂·湿地风光</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="14" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-14.jpg" alt="临沂蒙山">
+                        <button class="guide-replace-btn" data-guide="guide-img-14">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>临沂蒙山之旅</h3>
+                        <p>蒙山国家森林公园</p>
+                        <p>沂水地下大峡谷</p>
+                        <p>天然氧吧·避暑胜地</p>
+                    </div>
+                </div>
+                <div class="guide-card" data-index="15" onclick="flipGuideCard(this)">
+                    <div class="guide-card-front">
+                        <img src="images/index/guides/guide-15.jpg" alt="枣庄台儿庄">
+                        <button class="guide-replace-btn" data-guide="guide-img-15">替换图片</button>
+                    </div>
+                    <div class="guide-card-back">
+                        <h3>枣庄台儿庄古城</h3>
+                        <p>天下第一庄</p>
+                        <p>运河古城夜游</p>
+                        <p>推荐：夜景灯光秀</p>
+                    </div>
+                </div>
+            </div>
+            <button class="gallery-nav gallery-nav-next" onclick="guideNext()">›</button>
+            <div class="btn-container">
+                <a href="guides.html" class="btn">查看更多攻略</a>
+                <button class="guides-save-btn" onclick="saveGuidesData()">保存修改</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="map-section" class="section map-section">
+        <h2 class="section-title">旅游地图</h2>
+        <p class="section-subtitle">探索山东各地的美丽风景</p>
+        <button class="map-edit-btn" id="map-edit-btn" onclick="toggleMapEditMode()">编辑模式</button>
+        <input type="file" id="map-file-input" accept="image/*" style="display:none;">
+        
+        <div class="map-wrapper">
+            <div class="map-left-panel">
+                <div class="map-ring-nav">
+                    <button class="map-ring-btn" onclick="mapPrev()">‹</button>
+                    <button class="map-ring-btn" onclick="mapNext()">›</button>
+                </div>
+                <div class="map-cards-container">
+                    <div class="map-card" data-index="0" onclick="selectMapCard(this)">
+                        <img src="images/index/map/map-0.jpg" alt="趵突泉">
+                        <button class="map-replace-btn" data-map="map-img-0">替换图片</button>
+                        <div class="map-card-info">
+                            <h4>趵突泉</h4>
+                            <p>济南 · 天下第一泉</p>
+                        </div>
+                    </div>
+                    <div class="map-card" data-index="1" onclick="selectMapCard(this)">
+                        <img src="images/index/map/map-1.jpg" alt="泰山">
+                        <button class="map-replace-btn" data-map="map-img-1">替换图片</button>
+                        <div class="map-card-info">
+                            <h4>泰山</h4>
+                            <p>泰安 · 五岳之首</p>
+                        </div>
+                    </div>
+                    <div class="map-card" data-index="2" onclick="selectMapCard(this)">
+                        <img src="images/index/map/map-2.jpg" alt="八大关">
+                        <button class="map-replace-btn" data-map="map-img-2">替换图片</button>
+                        <div class="map-card-info">
+                            <h4>八大关</h4>
+                            <p>青岛 · 万国建筑博览苑</p>
+                        </div>
+                    </div>
+                    <div class="map-card" data-index="3" onclick="selectMapCard(this)">
+                        <img src="images/index/map/map-3.jpg" alt="孔庙">
+                        <button class="map-replace-btn" data-map="map-img-3">替换图片</button>
+                        <div class="map-card-info">
+                            <h4>孔庙</h4>
+                            <p>曲阜 · 儒家文化圣地</p>
+                        </div>
+                    </div>
+                    <div class="map-card" data-index="4" onclick="selectMapCard(this)">
+                        <img src="images/index/map/map-4.jpg" alt="刘公岛">
+                        <button class="map-replace-btn" data-map="map-img-4">替换图片</button>
+                        <div class="map-card-info">
+                            <h4>刘公岛</h4>
+                            <p>威海 · 历史文化名岛</p>
+                        </div>
+                    </div>
+                    <div class="map-card" data-index="5" onclick="selectMapCard(this)">
+                        <img src="images/index/map/map-5.jpg" alt="蓬莱阁">
+                        <button class="map-replace-btn" data-map="map-img-5">替换图片</button>
+                        <div class="map-card-info">
+                            <h4>蓬莱阁</h4>
+                            <p>烟台 · 人间仙境</p>
+                        </div>
+                    </div>
+                    <div class="map-card" data-index="6" onclick="selectMapCard(this)">
+                        <img src="images/index/map/map-6.jpg" alt="万平口">
+                        <button class="map-replace-btn" data-map="map-img-6">替换图片</button>
+                        <div class="map-card-info">
+                            <h4>万平口</h4>
+                            <p>日照 · 阳光海岸</p>
+                        </div>
+                    </div>
+                    <div class="map-card" data-index="7" onclick="selectMapCard(this)">
+                        <img src="images/index/map/map-7.jpg" alt="台儿庄">
+                        <button class="map-replace-btn" data-map="map-img-7">替换图片</button>
+                        <div class="map-card-info">
+                            <h4>台儿庄古城</h4>
+                            <p>枣庄 · 运河古城</p>
+                        </div>
+                    </div>
+                    <div class="map-spot-detail" id="map-spot-detail">
+                        <h4 id="detail-title">趵突泉</h4>
+                        <p class="detail-desc" id="detail-desc">趵突泉位于济南市历下区，是济南三大名胜之一，被誉为"天下第一泉"。泉水从地下岩层中涌出，水质清冽甘美。</p>
+                        <div class="detail-tags" id="detail-tags">
+                            <span class="detail-tag">AAAAA景区</span>
+                            <span class="detail-tag">泉水</span>
+                            <span class="detail-tag">历史文化</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="map-right-panel">
+                <div class="map-header">
+                    <h3>山东旅游地图</h3>
+                </div>
+                <div class="map-container" id="map-container-box">
+                    <div id="map-placeholder" style="width:100%;height:350px;display:flex;align-items:center;justify-content:center;background:#f5f5f5;border-radius:8px;color:#999;font-size:0.9rem;">
+                        滚动到此处加载地图...
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="map-save-btn" onclick="saveMapData()">保存修改</button>
+    </section>
+
+    <section id="timeline" class="section timeline-section">
+        <h2 class="section-title">历史时间轴</h2>
+        <p class="section-subtitle">探索山东五千年历史文化</p>
+        <button class="timeline-edit-btn" id="timeline-edit-btn" onclick="toggleTimelineEditMode()">编辑模式</button>
+        <input type="file" id="timeline-file-input" accept="image/*" style="display:none;">
+        
+        <div class="timeline-container">
+            <div class="timeline-sidebar">
+                <div class="timeline-line"></div>
+                <div class="timeline-nodes">
+                    <div class="timeline-node active" data-period="ancient">
+                        <div class="node-dot"></div>
+                        <span class="node-label">先秦时期</span>
+                    </div>
+                    <div class="timeline-node" data-period="han">
+                        <div class="node-dot"></div>
+                        <span class="node-label">秦汉魏晋</span>
+                    </div>
+                    <div class="timeline-node" data-period="tang">
+                        <div class="node-dot"></div>
+                        <span class="node-label">隋唐盛世</span>
+                    </div>
+                    <div class="timeline-node" data-period="song">
+                        <div class="node-dot"></div>
+                        <span class="node-label">宋元明清</span>
+                    </div>
+                    <div class="timeline-node" data-period="modern">
+                        <div class="node-dot"></div>
+                        <span class="node-label">近现代</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-content">
+                <div class="timeline-period" id="period-ancient">
+                    <div class="period-content">
+                        <div class="period-year">约公元前2070年 - 公元前221年</div>
+                        <h3 class="period-title">先秦时期</h3>
+                        <p class="period-desc">山东是中华文明的重要发源地之一。早在新石器时代，这里就有人类活动的痕迹。夏商时期，山东地区出现了多个方国，其中以齐国和鲁国最为著名。</p>
+                        <div class="period-highlights">
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-0.jpg" alt="大汶口文化">
+                                <button class="timeline-replace-btn" data-tl="tl-img-0">替换图片</button>
+                                <h4>大汶口文化</h4>
+                                <p>距今约6300-4500年，发现于泰安大汶口</p>
+                            </div>
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-1.jpg" alt="齐国">
+                                <button class="timeline-replace-btn" data-tl="tl-img-1">替换图片</button>
+                                <h4>齐国称霸</h4>
+                                <p>春秋五霸之首，齐桓公任用管仲改革</p>
+                            </div>
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-2.jpg" alt="孔子">
+                                <button class="timeline-replace-btn" data-tl="tl-img-2">替换图片</button>
+                                <h4>孔子诞生</h4>
+                                <p>公元前551年，孔子诞生于曲阜</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-period" id="period-han">
+                    <div class="period-content">
+                        <div class="period-year">公元前221年 - 公元581年</div>
+                        <h3 class="period-title">秦汉魏晋</h3>
+                        <p class="period-desc">秦统一中国后，山东成为重要的政治经济中心。汉代设青州、兖州等州，农业、手工业发达。魏晋时期，山东是南北对峙的前沿，文化交融频繁。</p>
+                        <div class="period-highlights">
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-3.jpg" alt="泰山封禅">
+                                <button class="timeline-replace-btn" data-tl="tl-img-3">替换图片</button>
+                                <h4>泰山封禅</h4>
+                                <p>秦始皇、汉武帝等帝王登临泰山祭祀</p>
+                            </div>
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-4.jpg" alt="经学兴盛">
+                                <button class="timeline-replace-btn" data-tl="tl-img-4">替换图片</button>
+                                <h4>经学兴盛</h4>
+                                <p>郑玄遍注群经，形成郑学</p>
+                            </div>
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-5.jpg" alt="佛教传入">
+                                <button class="timeline-replace-btn" data-tl="tl-img-5">替换图片</button>
+                                <h4>佛教传入</h4>
+                                <p>山东成为佛教传播重要区域</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-period" id="period-tang">
+                    <div class="period-content">
+                        <div class="period-year">公元581年 - 公元907年</div>
+                        <h3 class="period-title">隋唐盛世</h3>
+                        <p class="period-desc">隋唐时期，山东经济繁荣，文化昌盛。大运河的开通使山东成为南北交通枢纽，登州、莱州成为重要港口。</p>
+                        <div class="period-highlights">
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-6.jpg" alt="大运河">
+                                <button class="timeline-replace-btn" data-tl="tl-img-6">替换图片</button>
+                                <h4>大运河开通</h4>
+                                <p>促进南北经济文化交流</p>
+                            </div>
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-7.jpg" alt="唐诗繁荣">
+                                <button class="timeline-replace-btn" data-tl="tl-img-7">替换图片</button>
+                                <h4>唐诗繁荣</h4>
+                                <p>李白、杜甫等诗人游历山东</p>
+                            </div>
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-8.jpg" alt="三教融合">
+                                <button class="timeline-replace-btn" data-tl="tl-img-8">替换图片</button>
+                                <h4>三教融合</h4>
+                                <p>儒释道文化相互交融</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-period" id="period-song">
+                    <div class="period-content">
+                        <div class="period-year">公元907年 - 公元1912年</div>
+                        <h3 class="period-title">宋元明清</h3>
+                        <p class="period-desc">宋元明清时期，山东继续保持重要地位。宋代梁山泊起义、明代郑和从山东出海、清代孔府地位尊崇，都彰显了山东的独特历史地位。</p>
+                        <div class="period-highlights">
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-9.jpg" alt="水浒故事">
+                                <button class="timeline-replace-btn" data-tl="tl-img-9">替换图片</button>
+                                <h4>水浒故事</h4>
+                                <p>梁山泊起义，《水浒传》故事发源地</p>
+                            </div>
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-10.jpg" alt="运河繁华">
+                                <button class="timeline-replace-btn" data-tl="tl-img-10">替换图片</button>
+                                <h4>运河繁华</h4>
+                                <p>临清、济宁成为运河重镇</p>
+                            </div>
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-11.jpg" alt="孔府荣耀">
+                                <button class="timeline-replace-btn" data-tl="tl-img-11">替换图片</button>
+                                <h4>孔府荣耀</h4>
+                                <p>衍圣公地位尊崇，孔庙扩建</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-period" id="period-modern">
+                    <div class="period-content">
+                        <div class="period-year">公元1912年 - 至今</div>
+                        <h3 class="period-title">近现代</h3>
+                        <p class="period-desc">近现代以来，山东经历了辛亥革命、抗日战争、解放战争等重大历史事件。改革开放后，山东经济迅速发展，成为中国重要的经济大省。</p>
+                        <div class="period-highlights">
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-12.jpg" alt="五四运动">
+                                <button class="timeline-replace-btn" data-tl="tl-img-12">替换图片</button>
+                                <h4>五四运动</h4>
+                                <p>山东问题引发全国抗议</p>
+                            </div>
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-13.jpg" alt="台儿庄战役">
+                                <button class="timeline-replace-btn" data-tl="tl-img-13">替换图片</button>
+                                <h4>台儿庄战役</h4>
+                                <p>抗日战争重要胜利</p>
+                            </div>
+                            <div class="highlight-card">
+                                <img src="images/index/timeline/tl-14.jpg" alt="经济腾飞">
+                                <button class="timeline-replace-btn" data-tl="tl-img-14">替换图片</button>
+                                <h4>经济腾飞</h4>
+                                <p>改革开放后山东经济快速发展</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="timeline-save-btn" onclick="saveTimelineData()">保存修改</button>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#hero">首页</a>
+            <a href="#cities">魅力城市</a>
+            <a href="#guides">攻略广场</a>
+            <a href="#map-section">旅游地图</a>
+            <a href="#timeline">历史时间轴</a>
+        </div>
+        <div class="footer-copyright">
+            © 2024 山止川行 - 山东文旅平台 版权所有
+        </div>
+        <div class="footer-disclaimer">
+            本站为非商业性文旅文化宣传网站，所有图片均来自于网络，仅用于文化展示与地方宣传，如涉及版权或授权问题，请联系3429085570@qq.com，我们将第一时间处理。文字内容综合参考豆包AI及DeepSeek编写。
+        </div>
+    </footer>
+
+    <script>
+        let isEditMode = false;
+        let currentReplaceIndex = -1;
+        let hasUnsavedChanges = false;
+
+        // ===== IndexedDB 工具函数 =====
+        var DB_NAME = 'ShanZhiChuanXingDB';
+        var DB_VERSION = 2;
+        var STORE_NAME = 'images';
+
+        function openDB(callback) {
+            var request = indexedDB.open(DB_NAME, DB_VERSION);
+            request.onupgradeneeded = function(e) {
+                var db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME, { keyPath: 'key' });
+                }
+            };
+            request.onsuccess = function(e) { callback(e.target.result); };
+            request.onerror = function(e) { console.error('IndexedDB error:', e); };
+        }
+
+        function saveImageToDB(key, blob, callback) {
+            openDB(function(db) {
+                var tx = db.transaction(STORE_NAME, 'readwrite');
+                tx.objectStore(STORE_NAME).put({ key: key, data: blob });
+                tx.oncomplete = function() { if (callback) callback(true); };
+                tx.onerror = function() { if (callback) callback(false); };
+            });
+        }
+
+        function loadImageFromDB(key, callback) {
+            openDB(function(db) {
+                var tx = db.transaction(STORE_NAME, 'readonly');
+                var request = tx.objectStore(STORE_NAME).get(key);
+                request.onsuccess = function() {
+                    var data = request.result ? request.result.data : null;
+                    callback(data);
+                };
+                request.onerror = function() { callback(null); };
+            });
+        }
+
+        // 根据Blob生成objectURL并设置到img元素
+        function setImgFromBlob(imgEl, blob) {
+            var url = URL.createObjectURL(blob);
+            imgEl.src = url;
+        }
+
+        // 标记有未保存更改
+        function markUnsaved() {
+            hasUnsavedChanges = true;
+            updateUnsavedUI();
+        }
+
+        // 清除未保存标记
+        function clearUnsaved() {
+            hasUnsavedChanges = false;
+            updateUnsavedUI();
+        }
+
+        // 更新未保存提示UI
+        function updateUnsavedUI() {
+            var bar = document.getElementById('unsaved-bar');
+            var floatingBtn = document.getElementById('floating-save-btn');
+            if (hasUnsavedChanges) {
+                bar.classList.add('visible');
+                floatingBtn.classList.add('has-unsaved');
+            } else {
+                bar.classList.remove('visible');
+                floatingBtn.classList.remove('has-unsaved');
+            }
+        }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            document.body.classList.toggle('edit-mode', isEditMode);
+            var btn = document.getElementById('hero-edit-btn');
+            btn.classList.toggle('active', isEditMode);
+            btn.textContent = isEditMode ? '退出编辑' : '编辑模式';
+            updateFloatingSaveBtn();
+        }
+
+        window.toggleEditMode = toggleEditMode;
+
+        function showToast(message, isError) {
+            var toast = document.getElementById('save-toast');
+            toast.textContent = message;
+            toast.style.background = isError ? '#e53935' : '#228B22';
+            toast.classList.add('show');
+            setTimeout(function() {
+                toast.classList.remove('show');
+                toast.style.background = '#228B22';
+            }, 3000);
+        }
+
+        function saveAllEdits() {
+            // 图片已在替换时直接以Blob存入IndexedDB，此处只需清除未保存标记
+            clearUnsaved();
+            showToast('保存成功！');
+        }
+
+        window.saveAllEdits = saveAllEdits;
+
+        // 更新浮动保存按钮可见性
+        function updateFloatingSaveBtn() {
+            var floatingBtn = document.getElementById('floating-save-btn');
+            if (isEditMode || document.body.classList.contains('cities-edit-mode')) {
+                floatingBtn.classList.add('visible');
+            } else {
+                floatingBtn.classList.remove('visible');
+            }
+        }
+
+        // 页面关闭前未保存确认
+        window.addEventListener('beforeunload', function(e) {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '您有未保存的更改，确定要离开吗？';
+                return e.returnValue;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var fileInput = document.getElementById('hero-file-input');
+            var replaceBtns = document.querySelectorAll('.replace-btn');
+
+            replaceBtns.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    currentReplaceIndex = parseInt(this.getAttribute('data-index'));
+                    fileInput.click();
+                });
+            });
+
+            fileInput.addEventListener('change', function(e) {
+                var file = e.target.files[0];
+                if (!file || currentReplaceIndex < 0) return;
+
+                var slides = document.querySelectorAll('.hero-slide');
+                if (slides[currentReplaceIndex]) {
+                    var img = slides[currentReplaceIndex].querySelector('.hero-image');
+                    setImgFromBlob(img, file);
+                    saveImageToDB('hero-slide-' + currentReplaceIndex, file, function(success) {
+                        if (!success) {
+                            showToast('图片保存到数据库失败', true);
+                        }
+                    });
+                    markUnsaved();
+                }
+                fileInput.value = '';
+            });
+
+            // 从IndexedDB恢复首页图片
+            for (var i = 0; i < 5; i++) {
+                (function(index) {
+                    loadImageFromDB('hero-slide-' + index, function(data) {
+                        if (data) {
+                            var slides = document.querySelectorAll('.hero-slide');
+                            if (slides[index]) {
+                                setImgFromBlob(slides[index].querySelector('.hero-image'), data);
+                            }
+                        }
+                    });
+                })(i);
+            }
+
+            // 四大魅力城市编辑功能
+            var isCitiesEditMode = false;
+            var currentCityReplace = '';
+
+            window.toggleCitiesEditMode = function() {
+                isCitiesEditMode = !isCitiesEditMode;
+                document.body.classList.toggle('cities-edit-mode', isCitiesEditMode);
+                var btn = document.getElementById('cities-edit-btn');
+                btn.classList.toggle('active', isCitiesEditMode);
+                btn.textContent = isCitiesEditMode ? '退出编辑' : '编辑模式';
+                updateFloatingSaveBtn();
+            };
+
+            var citiesFileInput = document.getElementById('cities-file-input');
+            var cityReplaceBtns = document.querySelectorAll('.city-replace-btn');
+
+            cityReplaceBtns.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    currentCityReplace = this.getAttribute('data-city');
+                    citiesFileInput.click();
+                });
+            });
+
+            citiesFileInput.addEventListener('change', function(e) {
+                var file = e.target.files[0];
+                if (!file || !currentCityReplace) return;
+
+                var item = document.querySelector('.gallery-item[data-city="' + currentCityReplace + '"]');
+                if (item) {
+                    var img = item.querySelector('img');
+                    setImgFromBlob(img, file);
+                    saveImageToDB('city-img-' + currentCityReplace, file, function(success) {
+                        if (!success) {
+                            showToast('图片保存到数据库失败', true);
+                        }
+                    });
+                    markUnsaved();
+                }
+                citiesFileInput.value = '';
+            });
+
+            // 从IndexedDB恢复城市图片
+            var cityNames = ['jinan', 'qingdao', 'taian', 'weihai'];
+            cityNames.forEach(function(city) {
+                loadImageFromDB('city-img-' + city, function(data) {
+                    if (data) {
+                        var item = document.querySelector('.gallery-item[data-city="' + city + '"]');
+                        if (item) {
+                            setImgFromBlob(item.querySelector('img'), data);
+                        }
+                    }
+                });
+            });
+        });
+
+        // 防止页面加载后自动滚动，确保停在首页
+        // 但如果URL带有锚点（从其他页面跳转来），则不干扰
+        (function() {
+            var hasAnchor = window.location.hash && window.location.hash.length > 1;
+            if (hasAnchor) {
+                // 有锚点时，等DOM就绪后跳转到锚点位置
+                document.addEventListener('DOMContentLoaded', function() {
+                    var target = document.querySelector(window.location.hash);
+                    if (target) {
+                        setTimeout(function() {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 500);
+                    }
+                });
+                return;
+            }
+            // 强制回到顶部
+            window.scrollTo(0, 0);
+            document.addEventListener('DOMContentLoaded', function() {
+                window.scrollTo(0, 0);
+            });
+            window.addEventListener('load', function() {
+                window.scrollTo(0, 0);
+            });
+            // pageshow事件处理浏览器前进/后退缓存
+            window.addEventListener('pageshow', function(e) {
+                if (!hasAnchor) window.scrollTo(0, 0);
+            });
+            // 只在页面加载初期守卫，2秒后彻底清除，不影响用户正常导航
+            var scrollGuard = setInterval(function() {
+                if (window.scrollY > 100) {
+                    window.scrollTo(0, 0);
+                }
+            }, 100);
+            setTimeout(function() {
+                clearInterval(scrollGuard);
+            }, 2000);
+        })();
+
+        // 滚动到地图区域时才加载百度地图iframe
+        var mapLoaded = false;
+        var mapObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting && !mapLoaded) {
+                    mapLoaded = true;
+                    var placeholder = document.getElementById('map-placeholder');
+                    var container = document.getElementById('map-container-box');
+                    if (placeholder && container) {
+                        var iframe = document.createElement('iframe');
+                        iframe.src = 'https://map.baidu.com/@13125432.472597545,4335351.063288339,8.96z,-0.3h';
+                        iframe.width = '100%';
+                        iframe.height = '350';
+                        iframe.frameBorder = '0';
+                        iframe.style.borderRadius = '8px';
+                        iframe.tabIndex = -1;
+                        container.removeChild(placeholder);
+                        container.appendChild(iframe);
+                    }
+                    mapObserver.disconnect();
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var mapContainer = document.getElementById('map-container-box');
+            if (mapContainer) {
+                mapObserver.observe(mapContainer);
+            }
+        });
+
+        let heroCurrentSlide = 0;
+        const heroSlides = document.querySelectorAll('.hero-slide');
+        const heroIndicators = document.querySelectorAll('.indicator-dot');
+
+        function heroNextSlide() {
+            heroSlides[heroCurrentSlide].classList.remove('active');
+            heroIndicators[heroCurrentSlide].classList.remove('active');
+            heroCurrentSlide = (heroCurrentSlide + 1) % heroSlides.length;
+            heroSlides[heroCurrentSlide].classList.add('active');
+            heroIndicators[heroCurrentSlide].classList.add('active');
+        }
+
+        function heroPrevSlide() {
+            heroSlides[heroCurrentSlide].classList.remove('active');
+            heroIndicators[heroCurrentSlide].classList.remove('active');
+            heroCurrentSlide = (heroCurrentSlide - 1 + heroSlides.length) % heroSlides.length;
+            heroSlides[heroCurrentSlide].classList.add('active');
+            heroIndicators[heroCurrentSlide].classList.add('active');
+        }
+
+        function heroGoToSlide(index) {
+            heroSlides[heroCurrentSlide].classList.remove('active');
+            heroIndicators[heroCurrentSlide].classList.remove('active');
+            heroCurrentSlide = index;
+            heroSlides[heroCurrentSlide].classList.add('active');
+            heroIndicators[heroCurrentSlide].classList.add('active');
+        }
+
+        window.nextSlide = heroNextSlide;
+        window.prevSlide = heroPrevSlide;
+        window.goToSlide = heroGoToSlide;
+
+        setInterval(heroNextSlide, 8000);
+
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const galleryDots = document.querySelectorAll('.gallery-dot');
+        let galleryCurrent = 0;
+
+        function updateGallery() {
+            galleryItems.forEach((item, index) => {
+                if (index === galleryCurrent) {
+                    item.classList.remove('side');
+                    item.classList.add('main');
+                } else {
+                    item.classList.remove('main');
+                    item.classList.add('side');
+                }
+            });
+            galleryDots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === galleryCurrent);
+            });
+        }
+
+        function galleryNext() {
+            galleryCurrent = (galleryCurrent + 1) % galleryItems.length;
+            updateGallery();
+        }
+
+        let guideCurrent = 2;
+        const guideCards = () => document.querySelectorAll('.guide-card');
+
+        function updateGuideCards() {
+            const cards = guideCards();
+            cards.forEach((card, index) => {
+                card.classList.remove('layer-0', 'layer-1', 'layer-2', 'layer-3', 'layer-4', 'layer-hide', 'flipped');
+                
+                const relativeIndex = (index - guideCurrent + 2 + cards.length) % cards.length;
+                
+                if (relativeIndex >= 0 && relativeIndex <= 4) {
+                    card.classList.add(`layer-${relativeIndex}`);
+                } else {
+                    card.classList.add('layer-hide');
+                }
+            });
+        }
+
+        function flipGuideCard(card) {
+            if (card.classList.contains('layer-2')) {
+                card.classList.toggle('flipped');
+            } else {
+                const idx = parseInt(card.getAttribute('data-index'));
+                guideCurrent = idx;
+                updateGuideCards();
+            }
+        }
+
+        function guidePrev() {
+            const cards = guideCards();
+            guideCurrent = (guideCurrent - 1 + cards.length) % cards.length;
+            updateGuideCards();
+        }
+
+        function guideNext() {
+            const cards = guideCards();
+            guideCurrent = (guideCurrent + 1) % cards.length;
+            updateGuideCards();
+        }
+
+        document.addEventListener('DOMContentLoaded', updateGuideCards);
+
+        // ===== 精选攻略编辑功能 =====
+        let guidesEditMode = false;
+        let currentGuideReplace = null;
+        const GUIDE_IMG_DB = 'guideImagesDB';
+        const GUIDE_IMG_STORE = 'guideImages';
+        const GUIDE_IMG_VERSION = 1;
+
+        function openGuideImgDB() {
+            return new Promise(function(resolve, reject) {
+                var request = indexedDB.open(GUIDE_IMG_DB, GUIDE_IMG_VERSION);
+                request.onupgradeneeded = function(e) {
+                    var db = e.target.result;
+                    if (!db.objectStoreNames.contains(GUIDE_IMG_STORE)) {
+                        db.createObjectStore(GUIDE_IMG_STORE);
+                    }
+                };
+                request.onsuccess = function(e) { resolve(e.target.result); };
+                request.onerror = function(e) { reject(e); };
+            });
+        }
+
+        function saveGuideImgToDB(key, blob, callback) {
+            openGuideImgDB().then(function(db) {
+                var tx = db.transaction(GUIDE_IMG_STORE, 'readwrite');
+                var store = tx.objectStore(GUIDE_IMG_STORE);
+                store.put(blob, key);
+                tx.oncomplete = function() { if (callback) callback(true); };
+                tx.onerror = function() { if (callback) callback(false); };
+            });
+        }
+
+        function loadGuideImgFromDB(key, callback) {
+            openGuideImgDB().then(function(db) {
+                var tx = db.transaction(GUIDE_IMG_STORE, 'readonly');
+                var store = tx.objectStore(GUIDE_IMG_STORE);
+                var request = store.get(key);
+                request.onsuccess = function(e) {
+                    if (e.target.result) { callback(e.target.result); }
+                    else { callback(null); }
+                };
+                request.onerror = function() { callback(null); };
+            });
+        }
+
+        function toggleGuidesEditMode() {
+            guidesEditMode = !guidesEditMode;
+            document.body.classList.toggle('guides-edit-mode', guidesEditMode);
+            var btn = document.getElementById('guides-edit-btn');
+            btn.textContent = guidesEditMode ? '退出编辑' : '编辑模式';
+            btn.style.background = guidesEditMode ? '#e74c3c' : 'var(--ochre)';
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('guide-replace-btn')) {
+                e.stopPropagation();
+                currentGuideReplace = e.target.getAttribute('data-guide');
+                document.getElementById('guides-file-input').click();
+            }
+        });
+
+        document.getElementById('guides-file-input').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file || !currentGuideReplace) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var img = new Image();
+                img.onload = function() {
+                    var canvas = document.createElement('canvas');
+                    var maxW = 16000;
+                    var w = img.width, h = img.height;
+                    if (w > maxW) { h = h * maxW / w; w = maxW; }
+                    canvas.width = w;
+                    canvas.height = h;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    canvas.toBlob(function(blob) {
+                        var url = URL.createObjectURL(blob);
+                        var card = document.querySelector('.guide-replace-btn[data-guide="' + currentGuideReplace + '"]');
+                        if (card) {
+                            var imgEl = card.parentElement.querySelector('img');
+                            if (imgEl) imgEl.src = url;
+                        }
+                        saveGuideImgToDB(currentGuideReplace, blob);
+                        currentGuideReplace = null;
+                    }, 'image/jpeg', 0.95);
+                };
+                img.onerror = function() {
+                    // canvas失败时直接用原图
+                    var url = ev.target.result;
+                    var card = document.querySelector('.guide-replace-btn[data-guide="' + currentGuideReplace + '"]');
+                    if (card) {
+                        var imgEl = card.parentElement.querySelector('img');
+                        if (imgEl) imgEl.src = url;
+                    }
+                    currentGuideReplace = null;
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        });
+
+        function restoreGuideImages() {
+            var btns = document.querySelectorAll('.guide-replace-btn');
+            btns.forEach(function(btn) {
+                var key = btn.getAttribute('data-guide');
+                loadGuideImgFromDB(key, function(blob) {
+                    if (blob) {
+                        var url = URL.createObjectURL(blob);
+                        var imgEl = btn.parentElement.querySelector('img');
+                        if (imgEl) imgEl.src = url;
+                    }
+                });
+            });
+        }
+
+        function saveGuidesData() {
+            var cards = document.querySelectorAll('.guide-card');
+            var textData = {};
+            cards.forEach(function(card) {
+                var idx = card.getAttribute('data-index');
+                var back = card.querySelector('.guide-card-back');
+                if (back) {
+                    var h3 = back.querySelector('h3');
+                    var ps = back.querySelectorAll('p');
+                    textData[idx] = {
+                        title: h3 ? h3.textContent : '',
+                        lines: Array.from(ps).map(function(p) { return p.textContent; })
+                    };
+                }
+            });
+            localStorage.setItem('guides-text-data', JSON.stringify(textData));
+            showToast('保存成功！');
+        }
+
+        function restoreGuidesText() {
+            var saved = localStorage.getItem('guides-text-data');
+            if (!saved) return;
+            try {
+                var data = JSON.parse(saved);
+                var cards = document.querySelectorAll('.guide-card');
+                cards.forEach(function(card) {
+                    var idx = card.getAttribute('data-index');
+                    if (data[idx]) {
+                        var back = card.querySelector('.guide-card-back');
+                        if (back) {
+                            var h3 = back.querySelector('h3');
+                            var ps = back.querySelectorAll('p');
+                            if (h3 && data[idx].title) h3.textContent = data[idx].title;
+                            if (ps.length && data[idx].lines) {
+                                data[idx].lines.forEach(function(line, i) {
+                                    if (ps[i]) ps[i].textContent = line;
+                                });
+                            }
+                        }
+                    }
+                });
+            } catch(e) {}
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            restoreGuideImages();
+            restoreGuidesText();
+        });
+
+        // 编辑模式下点击背面文字可编辑
+        document.addEventListener('click', function(e) {
+            if (guidesEditMode && e.target.closest('.guide-card-back')) {
+                e.stopPropagation();
+                if (e.target.tagName === 'H3' || e.target.tagName === 'P') {
+                    e.target.contentEditable = 'true';
+                    e.target.focus();
+                }
+            }
+        });
+
+        // ===== 旅游地图模块 - 圆环轮播 =====
+        let mapCurrent = 0;
+        const mapCards = () => document.querySelectorAll('.map-card');
+        
+        const mapSpotData = [
+            { title: '趵突泉', desc: '趵突泉位于济南市历下区，是济南三大名胜之一，被誉为"天下第一泉"。泉水从地下岩层中涌出，水质清冽甘美。', tags: ['AAAAA景区', '泉水', '历史文化'] },
+            { title: '泰山', desc: '泰山位于泰安市，是五岳之首，世界文化与自然双重遗产。主峰玉皇顶海拔1545米，自古就是帝王祭天的神山。', tags: ['AAAAA景区', '登山', '文化遗产'] },
+            { title: '八大关', desc: '八大关位于青岛市市南区，是著名的旅游景区，以八条以关隘命名的道路和200余栋各国风格建筑闻名。', tags: ['历史建筑', '海滨', '摄影'] },
+            { title: '孔庙', desc: '孔庙位于曲阜市，是祭祀孔子的庙宇，与孔府、孔林并称"三孔"，是中国现存规模最大的孔庙建筑群。', tags: ['AAAAA景区', '文化', '历史'] },
+            { title: '刘公岛', desc: '刘公岛位于威海市，是著名的历史文化名岛，曾是北洋水师的基地，现在是爱国主义教育基地。', tags: ['AAAA景区', '海岛', '历史'] },
+            { title: '蓬莱阁', desc: '蓬莱阁位于烟台市蓬莱区，是中国四大名楼之一，以"八仙过海"传说和海市蜃楼奇观闻名于世。', tags: ['AAAAA景区', '古迹', '传说'] },
+            { title: '万平口', desc: '万平口位于日照市东港区，是日照市的标志性海滨景区，有"蓝天、碧海、金沙滩"的美誉。', tags: ['海滨', '休闲', '亲子'] },
+            { title: '台儿庄古城', desc: '台儿庄古城位于枣庄市台儿庄区，是一座历经重建的运河古城，有"天下第一庄"之称。', tags: ['AAAAA景区', '古城', '夜游'] }
+        ];
+
+        function updateMapCards() {
+            const cards = mapCards();
+            const total = cards.length;
+            const radius = 320;
+            const angleStep = 360 / total;
+
+            cards.forEach((card, index) => {
+                const angle = angleStep * ((index - mapCurrent + total) % total);
+                const radian = (angle - 90) * Math.PI / 180;
+                
+                const x = Math.cos(radian) * radius;
+                const y = Math.sin(radian) * radius * 0.35;
+                const z = Math.sin(radian) * radius;
+                
+                const isFront = angle < 30 || angle > 330;
+                const isNear = (angle >= 30 && angle < 90) || (angle > 270 && angle <= 330);
+                
+                let scale, opacity, zIndex, width, height;
+                
+                if (isFront) {
+                    scale = 1;
+                    opacity = 1;
+                    zIndex = 10;
+                    width = 340;
+                    height = 460;
+                } else if (isNear) {
+                    scale = 0.75;
+                    opacity = 0.7;
+                    zIndex = 5;
+                    width = 240;
+                    height = 330;
+                } else {
+                    scale = 0.5;
+                    opacity = 0.4;
+                    zIndex = 1;
+                    width = 180;
+                    height = 250;
+                }
+
+                let rotateY_val;
+                if (isFront) rotateY_val = 0;
+                else if (angle <= 180) rotateY_val = -25;
+                else rotateY_val = 25;
+
+                card.style.width = width + 'px';
+                card.style.height = height + 'px';
+                card.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${scale}) rotateY(${rotateY_val}deg)`;
+                card.style.zIndex = zIndex;
+                card.style.opacity = opacity;
+                
+                if (isFront) {
+                    card.style.boxShadow = '0 10px 35px rgba(0,0,0,0.25)';
+                } else {
+                    card.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+                }
+            });
+            
+            updateMapDetail();
+        }
+
+        function updateMapDetail() {
+            const detail = document.getElementById('map-spot-detail');
+            const data = mapSpotData[mapCurrent];
+            if (data && detail) {
+                document.getElementById('detail-title').textContent = data.title;
+                document.getElementById('detail-desc').textContent = data.desc;
+                const tagsContainer = document.getElementById('detail-tags');
+                tagsContainer.innerHTML = data.tags.map(tag => `<span class="detail-tag">${tag}</span>`).join('');
+                detail.classList.add('active');
+            }
+        }
+
+        function selectMapCard(card) {
+            const idx = parseInt(card.getAttribute('data-index'));
+            mapCurrent = idx;
+            updateMapCards();
+        }
+
+        function mapPrev() {
+            const cards = mapCards();
+            mapCurrent = (mapCurrent - 1 + cards.length) % cards.length;
+            updateMapCards();
+        }
+
+        function mapNext() {
+            const cards = mapCards();
+            mapCurrent = (mapCurrent + 1) % cards.length;
+            updateMapCards();
+        }
+
+        document.addEventListener('DOMContentLoaded', updateMapCards);
+
+        // ===== 旅游地图编辑功能 =====
+        let mapEditMode = false;
+        let currentMapReplace = null;
+        const MAP_IMG_DB = 'mapImagesDB';
+        const MAP_IMG_STORE = 'mapImages';
+        const MAP_IMG_VERSION = 1;
+
+        function openMapImgDB() {
+            return new Promise(function(resolve, reject) {
+                var request = indexedDB.open(MAP_IMG_DB, MAP_IMG_VERSION);
+                request.onupgradeneeded = function(e) {
+                    var db = e.target.result;
+                    if (!db.objectStoreNames.contains(MAP_IMG_STORE)) {
+                        db.createObjectStore(MAP_IMG_STORE);
+                    }
+                };
+                request.onsuccess = function(e) { resolve(e.target.result); };
+                request.onerror = function(e) { reject(e); };
+            });
+        }
+
+        function saveMapImgToDB(key, blob, callback) {
+            openMapImgDB().then(function(db) {
+                var tx = db.transaction(MAP_IMG_STORE, 'readwrite');
+                var store = tx.objectStore(MAP_IMG_STORE);
+                store.put(blob, key);
+                tx.oncomplete = function() { if (callback) callback(true); };
+                tx.onerror = function() { if (callback) callback(false); };
+            });
+        }
+
+        function loadMapImgFromDB(key, callback) {
+            openMapImgDB().then(function(db) {
+                var tx = db.transaction(MAP_IMG_STORE, 'readonly');
+                var store = tx.objectStore(MAP_IMG_STORE);
+                var request = store.get(key);
+                request.onsuccess = function(e) {
+                    if (e.target.result) { callback(e.target.result); }
+                    else { callback(null); }
+                };
+                request.onerror = function() { callback(null); };
+            });
+        }
+
+        function toggleMapEditMode() {
+            mapEditMode = !mapEditMode;
+            document.body.classList.toggle('map-edit-mode', mapEditMode);
+            var btn = document.getElementById('map-edit-btn');
+            btn.textContent = mapEditMode ? '退出编辑' : '编辑模式';
+            btn.style.background = mapEditMode ? '#e74c3c' : 'var(--ochre)';
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('map-replace-btn')) {
+                e.stopPropagation();
+                currentMapReplace = e.target.getAttribute('data-map');
+                document.getElementById('map-file-input').click();
+            }
+        });
+
+        document.getElementById('map-file-input').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file || !currentMapReplace) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var img = new Image();
+                img.onload = function() {
+                    var canvas = document.createElement('canvas');
+                    var maxW = 16000;
+                    var w = img.width, h = img.height;
+                    if (w > maxW) { h = h * maxW / w; w = maxW; }
+                    canvas.width = w;
+                    canvas.height = h;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    canvas.toBlob(function(blob) {
+                        var url = URL.createObjectURL(blob);
+                        var btn = document.querySelector('.map-replace-btn[data-map="' + currentMapReplace + '"]');
+                        if (btn) {
+                            var imgEl = btn.parentElement.querySelector('img');
+                            if (imgEl) imgEl.src = url;
+                        }
+                        saveMapImgToDB(currentMapReplace, blob);
+                        currentMapReplace = null;
+                    }, 'image/jpeg', 0.95);
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        });
+
+        function restoreMapImages() {
+            var btns = document.querySelectorAll('.map-replace-btn');
+            btns.forEach(function(btn) {
+                var key = btn.getAttribute('data-map');
+                loadMapImgFromDB(key, function(blob) {
+                    if (blob) {
+                        var url = URL.createObjectURL(blob);
+                        var imgEl = btn.parentElement.querySelector('img');
+                        if (imgEl) imgEl.src = url;
+                    }
+                });
+            });
+        }
+
+        function saveMapData() {
+            var cards = document.querySelectorAll('.map-card');
+            var textData = {};
+            cards.forEach(function(card) {
+                var idx = card.getAttribute('data-index');
+                var info = card.querySelector('.map-card-info');
+                if (info) {
+                    var h4 = info.querySelector('h4');
+                    var p = info.querySelector('p');
+                    textData[idx] = {
+                        title: h4 ? h4.textContent : '',
+                        subtitle: p ? p.textContent : ''
+                    };
+                }
+            });
+            localStorage.setItem('map-text-data', JSON.stringify(textData));
+            showToast('保存成功！');
+        }
+
+        function restoreMapText() {
+            var saved = localStorage.getItem('map-text-data');
+            if (!saved) return;
+            try {
+                var data = JSON.parse(saved);
+                var cards = document.querySelectorAll('.map-card');
+                cards.forEach(function(card) {
+                    var idx = card.getAttribute('data-index');
+                    if (data[idx]) {
+                        var info = card.querySelector('.map-card-info');
+                        if (info) {
+                            var h4 = info.querySelector('h4');
+                            var p = info.querySelector('p');
+                            if (h4 && data[idx].title) h4.textContent = data[idx].title;
+                            if (p && data[idx].subtitle) p.textContent = data[idx].subtitle;
+                        }
+                    }
+                });
+            } catch(e) {}
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            restoreMapImages();
+            restoreMapText();
+        });
+
+        // ===== 历史时间轴编辑功能 =====
+        let timelineEditMode = false;
+        let currentTlReplace = null;
+        const TL_IMG_DB = 'timelineImagesDB';
+        const TL_IMG_STORE = 'timelineImages';
+        const TL_IMG_VERSION = 1;
+
+        function openTlImgDB() {
+            return new Promise(function(resolve, reject) {
+                var request = indexedDB.open(TL_IMG_DB, TL_IMG_VERSION);
+                request.onupgradeneeded = function(e) {
+                    var db = e.target.result;
+                    if (!db.objectStoreNames.contains(TL_IMG_STORE)) {
+                        db.createObjectStore(TL_IMG_STORE);
+                    }
+                };
+                request.onsuccess = function(e) { resolve(e.target.result); };
+                request.onerror = function(e) { reject(e); };
+            });
+        }
+
+        function saveTlImgToDB(key, blob, callback) {
+            openTlImgDB().then(function(db) {
+                var tx = db.transaction(TL_IMG_STORE, 'readwrite');
+                var store = tx.objectStore(TL_IMG_STORE);
+                store.put(blob, key);
+                tx.oncomplete = function() { if (callback) callback(true); };
+                tx.onerror = function() { if (callback) callback(false); };
+            });
+        }
+
+        function loadTlImgFromDB(key, callback) {
+            openTlImgDB().then(function(db) {
+                var tx = db.transaction(TL_IMG_STORE, 'readonly');
+                var store = tx.objectStore(TL_IMG_STORE);
+                var request = store.get(key);
+                request.onsuccess = function(e) {
+                    if (e.target.result) { callback(e.target.result); }
+                    else { callback(null); }
+                };
+                request.onerror = function() { callback(null); };
+            });
+        }
+
+        function toggleTimelineEditMode() {
+            timelineEditMode = !timelineEditMode;
+            document.body.classList.toggle('timeline-edit-mode', timelineEditMode);
+            var btn = document.getElementById('timeline-edit-btn');
+            btn.textContent = timelineEditMode ? '退出编辑' : '编辑模式';
+            btn.style.background = timelineEditMode ? '#e74c3c' : 'var(--ochre)';
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('timeline-replace-btn')) {
+                e.stopPropagation();
+                currentTlReplace = e.target.getAttribute('data-tl');
+                document.getElementById('timeline-file-input').click();
+            }
+        });
+
+        document.getElementById('timeline-file-input').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file || !currentTlReplace) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var img = new Image();
+                img.onload = function() {
+                    var canvas = document.createElement('canvas');
+                    var maxW = 16000;
+                    var w = img.width, h = img.height;
+                    if (w > maxW) { h = h * maxW / w; w = maxW; }
+                    canvas.width = w;
+                    canvas.height = h;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    canvas.toBlob(function(blob) {
+                        var url = URL.createObjectURL(blob);
+                        var btn = document.querySelector('.timeline-replace-btn[data-tl="' + currentTlReplace + '"]');
+                        if (btn) {
+                            var imgEl = btn.parentElement.querySelector('img');
+                            if (imgEl) imgEl.src = url;
+                        }
+                        saveTlImgToDB(currentTlReplace, blob);
+                        currentTlReplace = null;
+                    }, 'image/jpeg', 0.95);
+                };
+                img.onerror = function() {
+                    var url = ev.target.result;
+                    var btn = document.querySelector('.timeline-replace-btn[data-tl="' + currentTlReplace + '"]');
+                    if (btn) {
+                        var imgEl = btn.parentElement.querySelector('img');
+                        if (imgEl) imgEl.src = url;
+                    }
+                    currentTlReplace = null;
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        });
+
+        function restoreTimelineImages() {
+            var btns = document.querySelectorAll('.timeline-replace-btn');
+            btns.forEach(function(btn) {
+                var key = btn.getAttribute('data-tl');
+                loadTlImgFromDB(key, function(blob) {
+                    if (blob) {
+                        var url = URL.createObjectURL(blob);
+                        var imgEl = btn.parentElement.querySelector('img');
+                        if (imgEl) imgEl.src = url;
+                    }
+                });
+            });
+        }
+
+        function saveTimelineData() {
+            var cards = document.querySelectorAll('.highlight-card');
+            var textData = {};
+            cards.forEach(function(card, idx) {
+                var h4 = card.querySelector('h4');
+                var p = card.querySelector('p');
+                textData[idx] = {
+                    title: h4 ? h4.textContent : '',
+                    desc: p ? p.textContent : ''
+                };
+            });
+            localStorage.setItem('timeline-text-data', JSON.stringify(textData));
+            showToast('保存成功！');
+        }
+
+        function restoreTimelineText() {
+            var saved = localStorage.getItem('timeline-text-data');
+            if (!saved) return;
+            try {
+                var data = JSON.parse(saved);
+                var cards = document.querySelectorAll('.highlight-card');
+                cards.forEach(function(card, idx) {
+                    if (data[idx]) {
+                        var h4 = card.querySelector('h4');
+                        var p = card.querySelector('p');
+                        if (h4 && data[idx].title) h4.textContent = data[idx].title;
+                        if (p && data[idx].desc) p.textContent = data[idx].desc;
+                    }
+                });
+            } catch(e) {}
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            restoreTimelineImages();
+            restoreTimelineText();
+        });
+
+        function galleryGoTo(index) {
+            galleryCurrent = index;
+            updateGallery();
+        }
+
+        document.querySelectorAll('.navbar nav a, .footer-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    
+                    document.querySelectorAll('.navbar nav a').forEach(a => a.classList.remove('active'));
+                    if (link.closest('.navbar')) link.classList.add('active');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const timelineNodes = document.querySelectorAll('.timeline-node');
+            const timelinePeriods = document.querySelectorAll('.timeline-period');
+            
+            function updateTimeline() {
+                const scrollPosition = window.scrollY;
+                const windowHeight = window.innerHeight;
+                
+                timelinePeriods.forEach((period, index) => {
+                    const periodTop = period.offsetTop;
+                    const periodHeight = period.offsetHeight;
+                    
+                    if (scrollPosition >= periodTop - windowHeight/2 && scrollPosition < periodTop + periodHeight - windowHeight/2) {
+                        period.classList.add('active');
+                        timelineNodes.forEach((node, i) => {
+                            node.classList.remove('active', 'passed', 'future');
+                            if (i === index) {
+                                node.classList.add('active');
+                            } else if (i < index) {
+                                node.classList.add('passed');
+                            } else {
+                                node.classList.add('future');
+                            }
+                        });
+                    }
+                });
+            }
+            
+            timelineNodes.forEach((node, index) => {
+                node.addEventListener('click', function() {
+                    const periodId = 'period-' + this.dataset.period;
+                    const period = document.getElementById(periodId);
+                    if (period) {
+                        period.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
+            
+            window.addEventListener('scroll', updateTimeline);
+            updateTimeline();
+        });
+    </script>
+</body>
+</html>

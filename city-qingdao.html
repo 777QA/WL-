@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青岛 - 山止川行</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --ink-green: #228B22; --warm-white: #FAFAFA; }
+        body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--warm-white); color: #333; line-height: 1.6; }
+        header { background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 100; }
+        .navbar { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .navbar-logo { font-size: 1.5rem; font-weight: bold; color: var(--ink-green); text-decoration: none; font-family: 'Ma Shan Zheng', serif; }
+        .navbar-links { display: flex; gap: 2rem; }
+        .navbar-links a { text-decoration: none; color: #333; font-weight: 500; padding: 0.5rem 1rem; border-radius: 20px; transition: all 0.3s; }
+        .navbar-links a:hover { background: rgba(34,139,34,0.1); color: var(--ink-green); }
+        .hero-section { position: relative; height: 1000px; overflow: hidden; }
+        .hero-image { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; }
+        .hero-title { font-size: 3.5rem; font-family: 'Ma Shan Zheng', serif; margin-bottom: 1rem; }
+        .hero-subtitle { font-size: 1.3rem; opacity: 0.9; }
+        .content-section { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; }
+        .section-title { font-size: 2rem; color: var(--ink-green); margin-bottom: 2rem; font-family: 'Ma Shan Zheng', serif; }
+        .city-intro { background: white; padding: 3rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 3rem; }
+        .city-intro p { font-size: 1.1rem; line-height: 1.8; color: #555; margin-bottom: 1.5rem; }
+        .city-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; margin-top: 2rem; }
+        .stat-item { text-align: center; padding: 1.5rem; background: rgba(34,139,34,0.05); border-radius: 12px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--ink-green); }
+        .stat-label { font-size: 0.9rem; color: #666; margin-top: 0.5rem; }
+        .attractions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 2rem; margin-top: 2rem; }
+        .attraction-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; cursor: pointer; display: block; width: 100%; }
+        .attraction-card:hover { transform: translateY(-5px); }
+        .attraction-image { width: 100%; height: 400px; object-fit: cover; display: block; }
+        .attraction-content { padding: 1.5rem; }
+        .attraction-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.8rem; color: #333; }
+        .attraction-desc { font-size: 0.9rem; color: #666; line-height: 1.6; }
+        .food-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 2rem; margin-top: 2rem; }
+        .food-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; transition: transform 0.3s; cursor: pointer; display: block; width: 100%; }
+        .food-card:hover { transform: translateY(-5px); }
+        .food-image { width: 100%; height: 360px; object-fit: cover; display: block; }
+        .food-name { padding: 1rem; font-size: 1.1rem; font-weight: 600; color: #333; }
+        .food-desc { padding: 0 1rem 1.5rem; font-size: 0.85rem; color: #666; }
+        footer { background: #333; color: white; text-align: center; padding: 2rem; margin-top: 4rem; }
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; }
+        .footer-links a { color: rgba(255,255,255,0.8); text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: white; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 9999; }
+        .modal-overlay.active { display: block; }
+        .modal-content { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 20px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(0,0,0,0.5); color: white; font-size: 1.5rem; cursor: pointer; z-index: 10000; }
+        .modal-image { width: 100%; height: 400px; object-fit: cover; display: block; }
+        .modal-body { padding: 2rem; }
+        .modal-title { font-size: 1.8rem; color: var(--ink-green); margin-bottom: 1rem; font-family: 'Ma Shan Zheng', serif; }
+        .modal-desc { font-size: 1rem; color: #555; line-height: 1.8; }
+        @media (max-width:768px) { .hero-title { font-size: 2.5rem; } .city-stats { grid-template-columns:1fr; } .attractions-grid, .food-grid { grid-template-columns:1fr; } .modal-image { height: 250px; } }
+        /* 编辑模式样式 */
+        .edit-mode-btn { display: none !important; background: var(--ink-green); color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.3s; white-space: nowrap; }
+        .edit-mode-btn:hover { background: #1a7a1a; }
+        .edit-mode-btn.active { background: #e74c3c; }
+        .edit-mode-btn.active:hover { background: #c0392b; }
+        body.edit-mode .city-intro p[contenteditable="true"] { outline: 2px dashed var(--ink-green); outline-offset: 4px; border-radius: 4px; padding: 0.5rem; min-height: 1.5em; }
+        body.edit-mode .attraction-title[contenteditable="true"], body.edit-mode .food-name[contenteditable="true"] { outline: 2px dashed var(--ink-green); outline-offset: 2px; border-radius: 4px; }
+        body.edit-mode .attraction-desc[contenteditable="true"], body.edit-mode .food-desc[contenteditable="true"] { outline: 2px dashed var(--ink-green); outline-offset: 2px; border-radius: 4px; padding: 0.3rem; min-height: 1.2em; }
+        .replace-img-btn { display: none; position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem; z-index: 10; transition: background 0.3s; }
+        .replace-img-btn:hover { background: rgba(0,0,0,0.9); }
+        body.edit-mode .replace-img-btn { display: none; }
+        body.edit-mode .attraction-card, body.edit-mode .food-card { cursor: default; }
+        body.edit-mode .attraction-card:hover, body.edit-mode .food-card:hover { transform: none; }
+        .hero-section { position: relative; }
+        .attraction-card { position: relative; }
+        .food-card { position: relative; }
+        .save-btn { background: #2980b9; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.3s; white-space: nowrap; display: none; margin-left: 0.5rem; }
+        .save-btn:hover { background: #2471a3; }
+        body.edit-mode .save-btn { display: none; }
+        .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #228B22; color: white; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 500; z-index: 10000; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+        .toast.show { opacity: 1; }
+        [contenteditable="true"]:focus { background: rgba(34,139,34,0.05); }
+        /* 未保存更改提示条 */
+        .unsaved-bar { display: none !important; position: fixed; bottom: 0; left: 0; right: 0; background: #f39c12; color: white; padding: 0.8rem 2rem; justify-content: center; align-items: center; gap: 1rem; z-index: 9998; transform: translateY(100%); transition: transform 0.3s ease; }
+        .unsaved-bar.visible { transform: translateY(0); }
+        .unsaved-bar span { font-size: 1rem; font-weight: 500; }
+        .unsaved-bar .unsaved-save-btn { background: white; color: #f39c12; border: none; padding: 0.4rem 1.2rem; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s; }
+        .unsaved-bar .unsaved-save-btn:hover { background: #fff8e1; }
+        /* 编辑模式下统计数据的可编辑样式 */
+        body.edit-mode .stat-value[contenteditable="true"], body.edit-mode .stat-label[contenteditable="true"] { outline: 2px dashed var(--ink-green); outline-offset: 2px; border-radius: 4px; padding: 0.2rem 0.5rem; min-height: 1em; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="index.html" class="navbar-logo">山止川行</a>
+            <nav class="navbar-links">
+                <a href="index.html">首页</a>
+                <a href="index.html#cities">魅力城市</a>
+                <a href="guides.html">攻略广场</a>
+                <a href="index.html#map-section">旅游地图</a>
+                <a href="index.html#timeline">历史时间轴</a>
+                <button class="edit-mode-btn" id="editModeBtn">编辑模式</button>
+                <button class="save-btn" id="saveBtn">保存修改</button>
+            </nav>
+        </div>
+    </header>
+    <section class="hero-section">
+        <button class="replace-img-btn" data-target="hero">替换图片</button>
+        <img src="images/qingdao/hero.jpg" alt="青岛风光" class="hero-image">
+        <div class="hero-overlay">
+            <h1 class="hero-title">青岛</h1>
+            <p class="hero-subtitle">岛城 · 红瓦绿树，碧海蓝天</p>
+        </div>
+    </section>
+    <section class="content-section">
+        <h2 class="section-title">城市介绍</h2>
+        <div class="city-intro">
+            <p>青岛，别称岛城、琴岛，位于山东半岛南部沿海，是中国重要的沿海中心城市和滨海度假旅游城市。</p>
+            <p>青岛是中国帆船之都，曾举办2008年北京奥运会帆船比赛。城市融合了德式建筑风情与现代都市风貌，八大关景区被誉为"万国建筑博览苑"。</p>
+            <div class="city-stats">
+                <div class="stat-item"><div class="stat-value">730</div><div class="stat-label">公里海岸线</div></div>
+                <div class="stat-item"><div class="stat-value">120</div><div class="stat-label">年德占历史</div></div>
+                <div class="stat-item"><div class="stat-value">5.9万</div><div class="stat-label">平方公里</div></div>
+            </div>
+        </div>
+    </section>
+    <section class="content-section">
+        <h2 class="section-title">著名景点</h2>
+        <div class="attractions-grid">
+            <div class="attraction-card" data-title="八大关" data-image="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800" data-desc="八条以关隘命名的街道，汇集了20多个国家的建筑风格，被誉为"万国建筑博览苑"。八大关是青岛最具特色的景区之一。">
+                <button class="replace-img-btn" data-target="attraction-image">替换图片</button>
+                <img src="images/qingdao/attraction-0.jpg" alt="八大关" class="attraction-image">
+                <div class="attraction-content"><h3 class="attraction-title">八大关</h3><p class="attraction-desc">点击查看详情</p></div>
+            </div>
+            <div class="attraction-card" data-title="栈桥" data-image="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800" data-desc="青岛的标志性建筑，全长440米，是观赏海上风光的绝佳地点。栈桥是青岛的象征，每天吸引大量游客。">
+                <button class="replace-img-btn" data-target="attraction-image">替换图片</button>
+                <img src="images/qingdao/attraction-1.jpg" alt="栈桥" class="attraction-image">
+                <div class="attraction-content"><h3 class="attraction-title">栈桥</h3><p class="attraction-desc">点击查看详情</p></div>
+            </div>
+            <div class="attraction-card" data-title="崂山" data-image="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800" data-desc="中国海岸线第一高峰，山海相连，风景秀丽，是著名的道教名山。崂山以山海奇观和道教文化闻名。">
+                <button class="replace-img-btn" data-target="attraction-image">替换图片</button>
+                <img src="images/qingdao/attraction-2.jpg" alt="崂山" class="attraction-image">
+                <div class="attraction-content"><h3 class="attraction-title">崂山</h3><p class="attraction-desc">点击查看详情</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="content-section">
+        <h2 class="section-title">特色美食</h2>
+        <div class="food-grid">
+            <div class="food-card" data-title="青岛大虾" data-image="https://images.unsplash.com/photo-1547592166-23ac55744acd?w=800" data-desc="肉质鲜嫩，味道鲜美，是青岛海鲜的代表。青岛大虾个大肉肥，是到青岛必尝的美食。">
+                <button class="replace-img-btn" data-target="food-image">替换图片</button>
+                <img src="images/qingdao/food-0.jpg" alt="青岛大虾" class="food-image">
+                <div class="food-name">青岛大虾</div><div class="food-desc">点击查看详情</div>
+            </div>
+            <div class="food-card" data-title="青岛啤酒" data-image="https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=800" data-desc="百年品牌，清爽醇厚，享誉世界。青岛啤酒是中国最著名的啤酒品牌之一。">
+                <button class="replace-img-btn" data-target="food-image">替换图片</button>
+                <img src="images/qingdao/food-1.jpg" alt="青岛啤酒" class="food-image">
+                <div class="food-name">青岛啤酒</div><div class="food-desc">点击查看详情</div>
+            </div>
+            <div class="food-card" data-title="海鲜饺子" data-image="https://images.unsplash.com/photo-1544025162-d76694265947?w=800" data-desc="皮薄馅大，鲜而不腻，风味独特。青岛海鲜饺子以新鲜海鲜为馅，味道鲜美。">
+                <button class="replace-img-btn" data-target="food-image">替换图片</button>
+                <img src="images/qingdao/food-2.jpg" alt="海鲜饺子" class="food-image">
+                <div class="food-name">海鲜饺子</div><div class="food-desc">点击查看详情</div>
+            </div>
+            <div class="food-card" data-title="海菜凉粉" data-image="https://images.unsplash.com/photo-1544025162-d76694265947?w=800" data-desc="清凉爽口，夏季消暑佳品。海菜凉粉是青岛特色小吃，口感爽滑。">
+                <button class="replace-img-btn" data-target="food-image">替换图片</button>
+                <img src="images/qingdao/food-3.jpg" alt="海菜凉粉" class="food-image">
+                <div class="food-name">海菜凉粉</div><div class="food-desc">点击查看详情</div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="index.html#cities">魅力城市</a>
+            <a href="guides.html">攻略广场</a>
+            <a href="index.html#map-section">旅游地图</a>
+            <a href="index.html#timeline">历史时间轴</a>
+        </div>
+        <div>© 2024 山止川行 - 山东文旅平台 版权所有</div>
+    </footer>
+    <div class="toast" id="toast">保存成功！</div>
+    <div class="unsaved-bar" id="unsavedBar">
+        <span>您有未保存的更改</span>
+        <button class="unsaved-save-btn" id="unsavedSaveBtn">保存</button>
+    </div>
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">×</button>
+            <img src="" alt="" class="modal-image" id="modal-image">
+            <div class="modal-body">
+                <h3 class="modal-title" id="modal-title"></h3>
+                <p class="modal-desc" id="modal-desc"></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function() {
+            var STORAGE_KEY = 'qingdao_edit_data';
+            var IMG_KEY_PREFIX = 'qingdao-img-';
+            var isEditMode = false;
+            var hasUnsavedChanges = false;
+
+            // IndexedDB 工具函数
+            var DB_NAME = 'ShanZhiChuanXingDB';
+            var DB_VERSION = 2;
+            var STORE_NAME = 'images';
+
+            function openDB(callback) {
+                var request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = function(e) {
+                    var db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'key' });
+                    }
+                };
+                request.onsuccess = function(e) { callback(e.target.result); };
+                request.onerror = function(e) { console.error('IndexedDB error:', e); };
+            }
+
+            // 存储Blob到IndexedDB
+            function saveImageToDB(key, blob, callback) {
+                openDB(function(db) {
+                    var tx = db.transaction(STORE_NAME, 'readwrite');
+                    tx.objectStore(STORE_NAME).put({ key: key, data: blob });
+                    tx.oncomplete = function() { if (callback) callback(true); };
+                    tx.onerror = function() { if (callback) callback(false); };
+                });
+            }
+
+            // 从IndexedDB读取Blob
+            function loadImageFromDB(key, callback) {
+                openDB(function(db) {
+                    var tx = db.transaction(STORE_NAME, 'readonly');
+                    var request = tx.objectStore(STORE_NAME).get(key);
+                    request.onsuccess = function() {
+                        var result = request.result ? request.result.data : null;
+                        callback(result);
+                    };
+                    request.onerror = function() { callback(null); };
+                });
+            }
+
+            function deleteImageFromDB(key, callback) {
+                openDB(function(db) {
+                    var tx = db.transaction(STORE_NAME, 'readwrite');
+                    tx.objectStore(STORE_NAME).delete(key);
+                    tx.oncomplete = function() { if (callback) callback(true); };
+                    tx.onerror = function() { if (callback) callback(false); };
+                });
+            }
+
+            // 获取所有可编辑元素
+            var editModeBtn = document.getElementById('editModeBtn');
+            var saveBtn = document.getElementById('saveBtn');
+            var toastEl = document.getElementById('toast');
+            var unsavedBar = document.getElementById('unsavedBar');
+            var unsavedSaveBtn = document.getElementById('unsavedSaveBtn');
+            var heroImage = document.querySelector('.hero-image');
+            var cityIntroPs = document.querySelectorAll('.city-intro p');
+            var attractionCards = document.querySelectorAll('.attraction-card');
+            var foodCards = document.querySelectorAll('.food-card');
+            var statValues = document.querySelectorAll('.stat-value');
+            var statLabels = document.querySelectorAll('.stat-label');
+            var modal = document.getElementById('modal-overlay');
+            var modalClose = document.getElementById('modal-close');
+            var modalImage = document.getElementById('modal-image');
+            var modalTitle = document.getElementById('modal-title');
+            var modalDesc = document.getElementById('modal-desc');
+
+            // 标记有未保存更改
+            function markDirty() {
+                if (!isEditMode) return;
+                hasUnsavedChanges = true;
+                unsavedBar.classList.add('visible');
+            }
+
+            // 清除未保存标记
+            function markClean() {
+                hasUnsavedChanges = false;
+                unsavedBar.classList.remove('visible');
+            }
+
+            // 从localStorage和IndexedDB恢复数据
+            function loadSavedData() {
+                try {
+                    var saved = localStorage.getItem(STORAGE_KEY);
+                    if (!saved) return;
+                    var data = JSON.parse(saved);
+
+                    // 恢复城市介绍文字
+                    if (data.introTexts) {
+                        cityIntroPs.forEach(function(p, i) {
+                            if (data.introTexts[i] !== undefined) {
+                                p.textContent = data.introTexts[i];
+                            }
+                        });
+                    }
+
+                    // 恢复统计数据
+                    if (data.statValues) {
+                        statValues.forEach(function(el, i) {
+                            if (data.statValues[i] !== undefined) {
+                                el.textContent = data.statValues[i];
+                            }
+                        });
+                    }
+                    if (data.statLabels) {
+                        statLabels.forEach(function(el, i) {
+                            if (data.statLabels[i] !== undefined) {
+                                el.textContent = data.statLabels[i];
+                            }
+                        });
+                    }
+
+                    // 恢复景点文字数据
+                    if (data.attractions) {
+                        attractionCards.forEach(function(card, i) {
+                            if (data.attractions[i]) {
+                                var d = data.attractions[i];
+                                if (d.title) {
+                                    card.setAttribute('data-title', d.title);
+                                    var titleEl = card.querySelector('.attraction-title');
+                                    if (titleEl) titleEl.textContent = d.title;
+                                }
+                                if (d.desc) {
+                                    card.setAttribute('data-desc', d.desc);
+                                    var descEl = card.querySelector('.attraction-desc');
+                                    if (descEl) descEl.textContent = d.desc;
+                                }
+                            }
+                        });
+                    }
+
+                    // 恢复美食文字数据
+                    if (data.foods) {
+                        foodCards.forEach(function(card, i) {
+                            if (data.foods[i]) {
+                                var d = data.foods[i];
+                                if (d.title) {
+                                    card.setAttribute('data-title', d.title);
+                                    var nameEl = card.querySelector('.food-name');
+                                    if (nameEl) nameEl.textContent = d.title;
+                                }
+                                if (d.desc) {
+                                    card.setAttribute('data-desc', d.desc);
+                                    var descEl = card.querySelector('.food-desc');
+                                    if (descEl) descEl.textContent = d.desc;
+                                }
+                            }
+                        });
+                    }
+
+                    // 从IndexedDB恢复图片（Blob -> URL.createObjectURL）
+                    // hero图片
+                    loadImageFromDB(IMG_KEY_PREFIX + 'hero', function(blob) {
+                        if (blob && blob instanceof Blob) {
+                            heroImage.src = URL.createObjectURL(blob);
+                        }
+                    });
+
+                    // 景点图片
+                    attractionCards.forEach(function(card, i) {
+                        loadImageFromDB(IMG_KEY_PREFIX + 'attraction-' + i, function(blob) {
+                            if (blob && blob instanceof Blob) {
+                                var url = URL.createObjectURL(blob);
+                                var img = card.querySelector('.attraction-image');
+                                if (img) img.src = url;
+                                // data-image存blob URL用于弹窗显示
+                                card.setAttribute('data-image', url);
+                            }
+                        });
+                    });
+
+                    // 美食图片
+                    foodCards.forEach(function(card, i) {
+                        loadImageFromDB(IMG_KEY_PREFIX + 'food-' + i, function(blob) {
+                            if (blob && blob instanceof Blob) {
+                                var url = URL.createObjectURL(blob);
+                                var img = card.querySelector('.food-image');
+                                if (img) img.src = url;
+                                card.setAttribute('data-image', url);
+                            }
+                        });
+                    });
+                } catch(e) {
+                    console.error('恢复编辑数据失败:', e);
+                }
+            }
+
+            // 保存数据：文字存localStorage，图片已在替换时直接存到IndexedDB
+            function saveData(callback) {
+                var data = {};
+
+                // 保存城市介绍文字
+                data.introTexts = [];
+                cityIntroPs.forEach(function(p) {
+                    data.introTexts.push(p.textContent);
+                });
+
+                // 保存统计数据
+                data.statValues = [];
+                statValues.forEach(function(el) {
+                    data.statValues.push(el.textContent);
+                });
+                data.statLabels = [];
+                statLabels.forEach(function(el) {
+                    data.statLabels.push(el.textContent);
+                });
+
+                // 保存景点数据（文字部分）
+                data.attractions = [];
+                attractionCards.forEach(function(card) {
+                    var titleEl = card.querySelector('.attraction-title');
+                    var title = titleEl ? titleEl.textContent : '';
+                    var descEl = card.querySelector('.attraction-desc');
+                    var desc = descEl ? descEl.textContent : '';
+                    data.attractions.push({
+                        title: title,
+                        desc: desc
+                    });
+                });
+
+                // 保存美食数据（文字部分）
+                data.foods = [];
+                foodCards.forEach(function(card) {
+                    var nameEl = card.querySelector('.food-name');
+                    var title = nameEl ? nameEl.textContent : '';
+                    var descEl = card.querySelector('.food-desc');
+                    var desc = descEl ? descEl.textContent : '';
+                    data.foods.push({
+                        title: title,
+                        desc: desc
+                    });
+                });
+
+                // 保存文字数据到localStorage
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                } catch(e) {
+                    if (callback) callback(false);
+                    return;
+                }
+
+                // 图片已经在替换时直接存到IndexedDB了，无需再次保存
+                if (callback) callback(true);
+            }
+
+            // 显示toast提示，msg为提示文字，isError为true时显示红色
+            function showToast(msg, isError) {
+                toastEl.textContent = msg || '保存成功！';
+                toastEl.style.background = isError ? '#e74c3c' : '#228B22';
+                toastEl.classList.add('show');
+                setTimeout(function() {
+                    toastEl.classList.remove('show');
+                    // 恢复默认
+                    toastEl.textContent = '保存成功！';
+                    toastEl.style.background = '#228B22';
+                }, 3000);
+            }
+
+            // 同步contenteditable修改到data属性
+            function syncEditableToData() {
+                attractionCards.forEach(function(card) {
+                    var titleEl = card.querySelector('.attraction-title');
+                    var descEl = card.querySelector('.attraction-desc');
+                    if (titleEl) card.setAttribute('data-title', titleEl.textContent.trim());
+                    if (descEl) card.setAttribute('data-desc', descEl.textContent.trim());
+                });
+                foodCards.forEach(function(card) {
+                    var nameEl = card.querySelector('.food-name');
+                    var descEl = card.querySelector('.food-desc');
+                    if (nameEl) card.setAttribute('data-title', nameEl.textContent.trim());
+                    if (descEl) card.setAttribute('data-desc', descEl.textContent.trim());
+                });
+            }
+
+            // 执行保存操作
+            function doSave() {
+                syncEditableToData();
+                saveData(function(success) {
+                    if (success) {
+                        markClean();
+                        showToast();
+                    } else {
+                        showToast('保存失败：存储空间不足', true);
+                    }
+                });
+            }
+
+            // 切换编辑模式
+            function toggleEditMode() {
+                isEditMode = !isEditMode;
+                document.body.classList.toggle('edit-mode', isEditMode);
+                editModeBtn.classList.toggle('active', isEditMode);
+                editModeBtn.textContent = isEditMode ? '退出编辑' : '编辑模式';
+
+                // 城市介绍文字可编辑
+                cityIntroPs.forEach(function(p) {
+                    p.contentEditable = isEditMode ? 'true' : 'false';
+                });
+
+                // 统计数据可编辑
+                statValues.forEach(function(el) {
+                    el.contentEditable = isEditMode ? 'true' : 'false';
+                });
+                statLabels.forEach(function(el) {
+                    el.contentEditable = isEditMode ? 'true' : 'false';
+                });
+
+                // 景点标题和描述可编辑
+                attractionCards.forEach(function(card) {
+                    var titleEl = card.querySelector('.attraction-title');
+                    var descEl = card.querySelector('.attraction-desc');
+                    if (titleEl) titleEl.contentEditable = isEditMode ? 'true' : 'false';
+                    if (descEl) descEl.contentEditable = isEditMode ? 'true' : 'false';
+                });
+
+                // 美食名称和描述可编辑
+                foodCards.forEach(function(card) {
+                    var nameEl = card.querySelector('.food-name');
+                    var descEl = card.querySelector('.food-desc');
+                    if (nameEl) nameEl.contentEditable = isEditMode ? 'true' : 'false';
+                    if (descEl) descEl.contentEditable = isEditMode ? 'true' : 'false';
+                });
+
+                // 退出编辑模式时保存数据
+                if (!isEditMode) {
+                    syncEditableToData();
+                    saveData(function(success) {
+                        if (success) {
+                            markClean();
+                        } else {
+                            showToast('保存失败：存储空间不足', true);
+                        }
+                    });
+                }
+            }
+
+            // 替换图片处理：直接用Blob存储，URL.createObjectURL显示
+            function handleReplaceImage(btn) {
+                var input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function(e) {
+                    var file = e.target.files[0];
+                    if (!file) return;
+
+                    // 直接用file对象（Blob）存储到IndexedDB
+                    var blob = file;
+                    var displayUrl = URL.createObjectURL(blob);
+                    var target = btn.getAttribute('data-target');
+                    var dbKey = null;
+
+                    if (target === 'hero') {
+                        heroImage.src = displayUrl;
+                        dbKey = IMG_KEY_PREFIX + 'hero';
+                    } else if (target === 'attraction-image') {
+                        var card = btn.closest('.attraction-card');
+                        var img = card.querySelector('.attraction-image');
+                        if (img) img.src = displayUrl;
+                        card.setAttribute('data-image', displayUrl);
+                        var idx = Array.prototype.indexOf.call(attractionCards, card);
+                        dbKey = IMG_KEY_PREFIX + 'attraction-' + idx;
+                    } else if (target === 'food-image') {
+                        var card = btn.closest('.food-card');
+                        var img = card.querySelector('.food-image');
+                        if (img) img.src = displayUrl;
+                        card.setAttribute('data-image', displayUrl);
+                        var idx = Array.prototype.indexOf.call(foodCards, card);
+                        dbKey = IMG_KEY_PREFIX + 'food-' + idx;
+                    }
+
+                    // 直接将Blob存入IndexedDB
+                    if (dbKey) {
+                        saveImageToDB(dbKey, blob, function(success) {
+                            if (!success) {
+                                showToast('图片保存到数据库失败', true);
+                            }
+                        });
+                    }
+
+                    markDirty();
+                };
+                input.click();
+            }
+
+            // 弹窗功能
+            function openModal(title, image, desc) {
+                if (isEditMode) return;
+                modalTitle.textContent = title;
+                modalImage.src = image;
+                modalImage.alt = title;
+                modalDesc.textContent = desc;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            // 绑定事件
+            editModeBtn.addEventListener('click', toggleEditMode);
+
+            // 保存按钮事件
+            saveBtn.addEventListener('click', doSave);
+
+            // 底部提示条保存按钮
+            unsavedSaveBtn.addEventListener('click', doSave);
+
+            // 监听所有contenteditable元素的输入事件
+            document.addEventListener('input', function(e) {
+                if (e.target.contentEditable === 'true') {
+                    markDirty();
+                }
+            });
+
+            // 替换图片按钮
+            document.querySelectorAll('.replace-img-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    handleReplaceImage(btn);
+                });
+            });
+
+            // 卡片点击弹窗
+            attractionCards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    if (isEditMode) return;
+                    var title = this.getAttribute('data-title');
+                    var image = this.getAttribute('data-image');
+                    var desc = this.getAttribute('data-desc');
+                    openModal(title, image, desc);
+                });
+            });
+
+            foodCards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    if (isEditMode) return;
+                    var title = this.getAttribute('data-title');
+                    var image = this.getAttribute('data-image');
+                    var desc = this.getAttribute('data-desc');
+                    openModal(title, image, desc);
+                });
+            });
+
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // 页面关闭前未保存更改确认
+            window.addEventListener('beforeunload', function(e) {
+                if (hasUnsavedChanges) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+
+            // 页面加载时恢复数据
+            loadSavedData();
+        })();
+
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'IMG' && !e.target.classList.contains('lightbox-img') && e.target.closest('.attraction-card, .food-card, .hero-section')) {
+                e.preventDefault();
+                e.stopPropagation();
+                var lb = document.getElementById('lightbox');
+                var lbImg = document.getElementById('lightbox-img');
+                lbImg.src = e.target.src;
+                lb.style.display = 'flex';
+            }
+        });
+    </script>
+    <div id="lightbox" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;cursor:pointer;justify-content:center;align-items:center;" onclick="this.style.display='none'">
+        <img id="lightbox-img" style="max-width:95%;max-height:95%;object-fit:contain;">
+    </div>
+</body>
+</html>

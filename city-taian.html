@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泰安 - 山止川行</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --ink-green: #228B22; --warm-white: #FAFAFA; }
+        body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--warm-white); color: #333; line-height: 1.6; }
+        header { background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 100; }
+        .navbar { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .navbar-logo { font-size: 1.5rem; font-weight: bold; color: var(--ink-green); text-decoration: none; font-family: 'Ma Shan Zheng', serif; }
+        .navbar-links { display: flex; gap: 2rem; }
+        .navbar-links a { text-decoration: none; color: #333; font-weight: 500; padding: 0.5rem 1rem; border-radius: 20px; transition: all 0.3s; }
+        .navbar-links a:hover { background: rgba(34,139,34,0.1); color: var(--ink-green); }
+        .hero-section { position: relative; height: 1000px; overflow: hidden; }
+        .hero-image { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; }
+        .hero-title { font-size: 3.5rem; font-family: 'Ma Shan Zheng', serif; margin-bottom: 1rem; }
+        .hero-subtitle { font-size: 1.3rem; opacity: 0.9; }
+        .content-section { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; }
+        .section-title { font-size: 2rem; color: var(--ink-green); margin-bottom: 2rem; font-family: 'Ma Shan Zheng', serif; }
+        .city-intro { background: white; padding: 3rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 3rem; }
+        .city-intro p { font-size: 1.1rem; line-height: 1.8; color: #555; margin-bottom: 1.5rem; }
+        .city-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; margin-top: 2rem; }
+        .stat-item { text-align: center; padding: 1.5rem; background: rgba(34,139,34,0.05); border-radius: 12px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--ink-green); }
+        .stat-label { font-size: 0.9rem; color: #666; margin-top: 0.5rem; }
+        .attractions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 2rem; margin-top: 2rem; }
+        .attraction-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; cursor: pointer; display: block; width: 100%; }
+        .attraction-card:hover { transform: translateY(-5px); }
+        .attraction-image { width: 100%; height: 400px; object-fit: cover; display: block; }
+        .attraction-content { padding: 1.5rem; }
+        .attraction-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.8rem; color: #333; }
+        .attraction-desc { font-size: 0.9rem; color: #666; line-height: 1.6; }
+        .food-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 2rem; margin-top: 2rem; }
+        .food-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; transition: transform 0.3s; cursor: pointer; display: block; width: 100%; }
+        .food-card:hover { transform: translateY(-5px); }
+        .food-image { width: 100%; height: 360px; object-fit: cover; display: block; }
+        .food-name { padding: 1rem; font-size: 1.1rem; font-weight: 600; color: #333; }
+        .food-desc { padding: 0 1rem 1.5rem; font-size: 0.85rem; color: #666; }
+        footer { background: #333; color: white; text-align: center; padding: 2rem; margin-top: 4rem; }
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; }
+        .footer-links a { color: rgba(255,255,255,0.8); text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: white; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 9999; }
+        .modal-overlay.active { display: block; }
+        .modal-content { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 20px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(0,0,0,0.5); color: white; font-size: 1.5rem; cursor: pointer; z-index: 10000; }
+        .modal-image { width: 100%; height: 400px; object-fit: cover; display: block; }
+        .modal-body { padding: 2rem; }
+        .modal-title { font-size: 1.8rem; color: var(--ink-green); margin-bottom: 1rem; font-family: 'Ma Shan Zheng', serif; }
+        .modal-desc { font-size: 1rem; color: #555; line-height: 1.8; }
+        /* 编辑模式样式 */
+        .edit-mode-btn { padding: 0.5rem 1.2rem; border: 2px solid var(--ink-green); border-radius: 20px; background: transparent; color: var(--ink-green); font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
+        .edit-mode-btn:hover { background: var(--ink-green); color: white; }
+        .edit-mode-btn.active { background: var(--ink-green); color: white; }
+        body.edit-mode .hero-section { position: relative; }
+        body.edit-mode .hero-section .replace-img-btn { display: none; }
+        .replace-img-btn { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 0.7rem 1.5rem; background: rgba(0,0,0,0.7); color: white; border: 2px dashed #fff; border-radius: 8px; cursor: pointer; font-size: 1rem; z-index: 10; transition: background 0.3s; }
+        .replace-img-btn:hover { background: rgba(34,139,34,0.9); }
+        body.edit-mode .attraction-card, body.edit-mode .food-card { position: relative; }
+        body.edit-mode .attraction-card .replace-img-btn, body.edit-mode .food-card .replace-img-btn { display: none; }
+        body.edit-mode .attraction-card .replace-img-btn { top: 100px; }
+        body.edit-mode .food-card .replace-img-btn { top: 90px; }
+        body.edit-mode [contenteditable="true"] { outline: 2px dashed var(--ink-green); outline-offset: 2px; background: rgba(34,139,34,0.05); border-radius: 4px; min-height: 1em; }
+        body.edit-mode [contenteditable="true"]:focus { outline: 2px solid var(--ink-green); background: rgba(34,139,34,0.1); }
+        body.edit-mode .attraction-card, body.edit-mode .food-card { cursor: default; }
+        body.edit-mode .attraction-card:hover, body.edit-mode .food-card:hover { transform: none; }
+
+        /* 保存按钮样式 */
+        .save-btn { padding: 0.5rem 1.2rem; border: 2px solid #1E90FF; border-radius: 20px; background: #1E90FF; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; display: none; }
+        .save-btn:hover { background: #1874CD; border-color: #1874CD; }
+        body.edit-mode .save-btn { display: none; }
+        /* Toast提示样式 */
+        .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #228B22; color: white; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 500; z-index: 10000; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .toast.show { opacity: 1; }
+        /* 未保存更改浮动提示条 */
+        .unsaved-bar { display: none !important; position: fixed; bottom: 0; left: 0; right: 0; background: #FF9800; color: white; padding: 0.8rem 2rem; justify-content: center; align-items: center; gap: 1rem; z-index: 9998; transform: translateY(100%); transition: transform 0.3s ease; box-shadow: 0 -2px 10px rgba(0,0,0,0.15); font-size: 1rem; font-weight: 500; }
+        .unsaved-bar.visible { transform: translateY(0); }
+        .unsaved-bar .unsaved-text { display: flex; align-items: center; gap: 0.5rem; }
+        .unsaved-bar .unsaved-dot { width: 8px; height: 8px; border-radius: 50%; background: white; animation: pulse-dot 1.5s infinite; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .unsaved-bar .unsaved-save-btn { padding: 0.4rem 1.2rem; background: white; color: #FF9800; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
+        .unsaved-bar .unsaved-save-btn:hover { background: #f5f5f5; }
+        @media (max-width:768px) { .hero-title { font-size: 2.5rem; } .city-stats { grid-template-columns:1fr; } .attractions-grid, .food-grid { grid-template-columns:1fr; } .modal-image { height: 250px; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="index.html" class="navbar-logo">山止川行</a>
+            <nav class="navbar-links">
+                <a href="index.html">首页</a>
+                <a href="index.html#cities">魅力城市</a>
+                <a href="guides.html">攻略广场</a>
+                <a href="index.html#map-section">旅游地图</a>
+                <a href="index.html#timeline">历史时间轴</a>
+                <button id="edit-mode-btn" class="edit-mode-btn">编辑模式</button>
+                <button id="save-btn" class="save-btn">保存修改</button>
+            </nav>
+        </div>
+    </header>
+    <section class="hero-section">
+        <img src="images/taian/hero.jpg" alt="泰安风光" class="hero-image" id="hero-img" data-edit-key="hero-image">
+        <button class="replace-img-btn" data-target="hero-image">替换图片</button>
+        <div class="hero-overlay">
+            <h1 class="hero-title">泰安</h1>
+            <p class="hero-subtitle">五岳之首 · 登泰山而小天下</p>
+        </div>
+    </section>
+    <section class="content-section">
+        <h2 class="section-title">城市介绍</h2>
+        <div class="city-intro">
+            <p>泰安，位于山东省中部，因泰山而得名，寓意"国泰民安"。泰安是中国优秀旅游城市，拥有世界自然与文化双重遗产——泰山。</p>
+            <p>泰山被誉为"五岳之首"，是历代帝王祭天的神山，也是中国传统文化的重要象征。泰安因泰山而闻名，每年吸引数百万游客前来朝拜游览。</p>
+            <div class="city-stats">
+                <div class="stat-item"><div class="stat-value" contenteditable="false">1545</div><div class="stat-label" contenteditable="false">米泰山高度</div></div>
+                <div class="stat-item"><div class="stat-value" contenteditable="false">4000</div><div class="stat-label" contenteditable="false">年文化历史</div></div>
+                <div class="stat-item"><div class="stat-value" contenteditable="false">7.7万</div><div class="stat-label" contenteditable="false">平方公里</div></div>
+            </div>
+        </div>
+    </section>
+    <section class="content-section">
+        <h2 class="section-title">著名景点</h2>
+        <div class="attractions-grid">
+            <div class="attraction-card" data-title="泰山" data-image="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800" data-desc="五岳之首，世界自然与文化双重遗产，历代帝王封禅之地，被誉为"天下第一山"。泰山以雄伟壮观的自然风光和深厚的文化底蕴闻名于世。">
+                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800" alt="泰山" class="attraction-image" data-edit-key="attraction-img-0">
+                <button class="replace-img-btn" data-target="attraction-img-0">替换图片</button>
+                <div class="attraction-content"><h3 class="attraction-title">泰山</h3><p class="attraction-desc">五岳之首，世界自然与文化双重遗产，历代帝王封禅之地，被誉为"天下第一山"。泰山以雄伟壮观的自然风光和深厚的文化底蕴闻名于世。</p></div>
+            </div>
+            <div class="attraction-card" data-title="岱庙" data-image="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800" data-desc="泰山最大、最完整的古建筑群，始建于汉代，是历代帝王祭祀泰山的场所。岱庙保存了大量的古代碑刻和建筑艺术珍品。">
+                <img src="images/taian/attraction-1.jpg" alt="岱庙" class="attraction-image" data-edit-key="attraction-img-1">
+                <button class="replace-img-btn" data-target="attraction-img-1">替换图片</button>
+                <div class="attraction-content"><h3 class="attraction-title">岱庙</h3><p class="attraction-desc">泰山最大、最完整的古建筑群，始建于汉代，是历代帝王祭祀泰山的场所。岱庙保存了大量的古代碑刻和建筑艺术珍品。</p></div>
+            </div>
+            <div class="attraction-card" data-title="红门宫" data-image="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800" data-desc="泰山徒步登山的起点，因西北崖上有红门而得名，是泰山文化的重要标志。红门宫是泰山道教活动的重要场所。">
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800" alt="红门宫" class="attraction-image" data-edit-key="attraction-img-2">
+                <button class="replace-img-btn" data-target="attraction-img-2">替换图片</button>
+                <div class="attraction-content"><h3 class="attraction-title">红门宫</h3><p class="attraction-desc">泰山徒步登山的起点，因西北崖上有红门而得名，是泰山文化的重要标志。红门宫是泰山道教活动的重要场所。</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="content-section">
+        <h2 class="section-title">特色美食</h2>
+        <div class="food-grid">
+            <div class="food-card" data-title="泰山煎饼" data-image="https://images.unsplash.com/photo-1547592166-23ac55744acd?w=800" data-desc="薄如蝉翼，酥脆可口，卷大葱吃风味独特。泰山煎饼是泰安最具代表性的特色小吃。">
+                <img src="images/taian/food-0.jpg" alt="泰山煎饼" class="food-image" data-edit-key="food-img-0">
+                <button class="replace-img-btn" data-target="food-img-0">替换图片</button>
+                <div class="food-name">泰山煎饼</div><div class="food-desc">薄如蝉翼，酥脆可口，卷大葱吃风味独特。泰山煎饼是泰安最具代表性的特色小吃。</div>
+            </div>
+            <div class="food-card" data-title="泉水豆腐" data-image="https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=800" data-desc="用泰山泉水制作，口感细腻，味道鲜美。泰安泉水豆腐以其独特的口感而闻名。">
+                <img src="https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=800" alt="泉水豆腐" class="food-image" data-edit-key="food-img-1">
+                <button class="replace-img-btn" data-target="food-img-1">替换图片</button>
+                <div class="food-name">泉水豆腐</div><div class="food-desc">用泰山泉水制作，口感细腻，味道鲜美。泰安泉水豆腐以其独特的口感而闻名。</div>
+            </div>
+            <div class="food-card" data-title="赤鳞鱼" data-image="https://images.unsplash.com/photo-1544025162-d76694265947?w=800" data-desc="泰山特产，肉质鲜嫩，营养丰富。赤鳞鱼是泰山独有的珍贵鱼种，被誉为"泰山三宝"之一。">
+                <img src="images/taian/food-2.jpg" alt="赤鳞鱼" class="food-image" data-edit-key="food-img-2">
+                <button class="replace-img-btn" data-target="food-img-2">替换图片</button>
+                <div class="food-name">赤鳞鱼</div><div class="food-desc">泰山特产，肉质鲜嫩，营养丰富。赤鳞鱼是泰山独有的珍贵鱼种，被誉为"泰山三宝"之一。</div>
+            </div>
+            <div class="food-card" data-title="山野菜" data-image="https://images.unsplash.com/photo-1544025162-d76694265947?w=800" data-desc="泰山特产，清香可口，绿色健康。泰山山野菜种类繁多，是大自然的馈赠。">
+                <img src="images/taian/food-3.jpg" alt="山野菜" class="food-image" data-edit-key="food-img-3">
+                <button class="replace-img-btn" data-target="food-img-3">替换图片</button>
+                <div class="food-name">山野菜</div><div class="food-desc">泰山特产，清香可口，绿色健康。泰山山野菜种类繁多，是大自然的馈赠。</div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="index.html#cities">魅力城市</a>
+            <a href="guides.html">攻略广场</a>
+            <a href="index.html#map-section">旅游地图</a>
+            <a href="index.html#timeline">历史时间轴</a>
+        </div>
+        <div>© 2024 山止川行 - 山东文旅平台 版权所有</div>
+    </footer>
+    <div class="toast" id="toast">保存成功！</div>
+    <div class="unsaved-bar" id="unsaved-bar">
+        <span class="unsaved-text"><span class="unsaved-dot"></span>您有未保存的更改</span>
+        <button class="unsaved-save-btn" id="unsaved-save-btn">保存</button>
+    </div>
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">×</button>
+            <img src="" alt="" class="modal-image" id="modal-image">
+            <div class="modal-body">
+                <h3 class="modal-title" id="modal-title"></h3>
+                <p class="modal-desc" id="modal-desc"></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function() {
+            var STORAGE_PREFIX = 'taian-edit-';
+            var isEditMode = false;
+            var hasUnsavedChanges = false;
+
+            // === localStorage 工具函数（仅用于文字数据） ===
+            function saveData(key, value) {
+                try { localStorage.setItem(STORAGE_PREFIX + key, value); return true; } catch(e) { return false; }
+            }
+            function loadData(key) {
+                try { return localStorage.getItem(STORAGE_PREFIX + key); } catch(e) { return null; }
+            }
+
+            // === IndexedDB 工具函数（用于图片存储，支持大容量） ===
+            var DB_NAME = 'ShanZhiChuanXingDB';
+            var DB_VERSION = 2;
+            var STORE_NAME = 'images';
+
+            function openDB(callback) {
+                var request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = function(e) {
+                    var db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'key' });
+                    }
+                };
+                request.onsuccess = function(e) { callback(e.target.result); };
+                request.onerror = function(e) { console.error('IndexedDB error:', e); };
+            }
+
+            function saveImageToDB(key, blob, callback) {
+                openDB(function(db) {
+                    var tx = db.transaction(STORE_NAME, 'readwrite');
+                    tx.objectStore(STORE_NAME).put({ key: key, data: blob });
+                    tx.oncomplete = function() { if (callback) callback(true); };
+                    tx.onerror = function() { if (callback) callback(false); };
+                });
+            }
+
+            function loadImageFromDB(key, callback) {
+                openDB(function(db) {
+                    var tx = db.transaction(STORE_NAME, 'readonly');
+                    var request = tx.objectStore(STORE_NAME).get(key);
+                    request.onsuccess = function() {
+                        if (request.result && request.result.data instanceof Blob) {
+                            callback(request.result.data);
+                        } else {
+                            callback(null);
+                        }
+                    };
+                    request.onerror = function() { callback(null); };
+                });
+            }
+
+            // === 未保存更改状态管理 ===
+            function markUnsaved() {
+                if (!isEditMode) return;
+                hasUnsavedChanges = true;
+                var bar = document.getElementById('unsaved-bar');
+                if (bar) bar.classList.add('visible');
+            }
+
+            function markSaved() {
+                hasUnsavedChanges = false;
+                var bar = document.getElementById('unsaved-bar');
+                if (bar) bar.classList.remove('visible');
+            }
+
+            // === Toast 提示 ===
+            var toastTimer = null;
+            function showToast(msg, isError) {
+                var toast = document.getElementById('toast');
+                if (msg) toast.textContent = msg;
+                toast.style.background = isError ? '#e74c3c' : '#228B22';
+                toast.classList.add('show');
+                if (toastTimer) clearTimeout(toastTimer);
+                toastTimer = setTimeout(function() {
+                    toast.classList.remove('show');
+                    toast.style.background = '';
+                }, 3000);
+            }
+
+            // === 从 IndexedDB + localStorage 恢复所有编辑内容 ===
+            function restoreFromStorage() {
+                // 恢复图片（从 IndexedDB 异步恢复，Blob → ObjectURL）
+                document.querySelectorAll('[data-edit-key]').forEach(function(img) {
+                    var key = img.getAttribute('data-edit-key');
+                    loadImageFromDB('taian-img-' + key, function(blob) {
+                        if (blob) {
+                            if (img._objectUrl) URL.revokeObjectURL(img._objectUrl);
+                            var url = URL.createObjectURL(blob);
+                            img._objectUrl = url;
+                            img.src = url;
+                            // 同步卡片data-image
+                            var card = img.closest('.attraction-card, .food-card');
+                            if (card) card.setAttribute('data-image', url);
+                        }
+                    });
+                });
+
+                // 恢复城市介绍段落
+                var introPs = document.querySelectorAll('.city-intro > p');
+                introPs.forEach(function(p, i) {
+                    var saved = loadData('intro-p-' + i);
+                    if (saved !== null) { p.textContent = saved; }
+                });
+
+                // 恢复统计数据
+                var statItems = document.querySelectorAll('.stat-item');
+                statItems.forEach(function(item, i) {
+                    var valueEl = item.querySelector('.stat-value');
+                    var labelEl = item.querySelector('.stat-label');
+                    var savedValue = loadData('stat-value-' + i);
+                    var savedLabel = loadData('stat-label-' + i);
+                    if (savedValue !== null && valueEl) { valueEl.textContent = savedValue; }
+                    if (savedLabel !== null && labelEl) { labelEl.textContent = savedLabel; }
+                });
+
+                // 恢复景点标题和描述
+                var attractionCards = document.querySelectorAll('.attraction-card');
+                attractionCards.forEach(function(card, i) {
+                    var titleEl = card.querySelector('.attraction-title');
+                    var descEl = card.querySelector('.attraction-desc');
+                    var savedTitle = loadData('attraction-title-' + i);
+                    var savedDesc = loadData('attraction-desc-' + i);
+                    if (savedTitle !== null && titleEl) { titleEl.textContent = savedTitle; }
+                    if (savedDesc !== null && descEl) { descEl.textContent = savedDesc; }
+                    // 同步 data-title 和 data-desc
+                    if (savedTitle !== null) { card.setAttribute('data-title', savedTitle); }
+                    if (savedDesc !== null) { card.setAttribute('data-desc', savedDesc); }
+                });
+
+                // 恢复美食名称和描述
+                var foodCards = document.querySelectorAll('.food-card');
+                foodCards.forEach(function(card, i) {
+                    var nameEl = card.querySelector('.food-name');
+                    var descEl = card.querySelector('.food-desc');
+                    var savedName = loadData('food-name-' + i);
+                    var savedDesc = loadData('food-desc-' + i);
+                    if (savedName !== null && nameEl) { nameEl.textContent = savedName; }
+                    if (savedDesc !== null && descEl) { descEl.textContent = savedDesc; }
+                    if (savedName !== null) { card.setAttribute('data-title', savedName); }
+                    if (savedDesc !== null) { card.setAttribute('data-desc', savedDesc); }
+                });
+            }
+
+            // === 保存当前编辑内容（图片已在替换时存入IndexedDB，此处仅保存文字→localStorage） ===
+            function saveToStorage(callback) {
+                var hasError = false;
+
+                // 同步图片 data-image 属性（使用已有的ObjectURL或原始src）
+                document.querySelectorAll('.attraction-card').forEach(function(card) {
+                    var img = card.querySelector('[data-edit-key]');
+                    if (img) { card.setAttribute('data-image', img.src); }
+                });
+                document.querySelectorAll('.food-card').forEach(function(card) {
+                    var img = card.querySelector('[data-edit-key]');
+                    if (img) { card.setAttribute('data-image', img.src); }
+                });
+
+                // 保存城市介绍段落
+                var introPs = document.querySelectorAll('.city-intro > p');
+                introPs.forEach(function(p, i) {
+                    if (!saveData('intro-p-' + i, p.textContent)) hasError = true;
+                });
+
+                // 保存统计数据
+                var statItems = document.querySelectorAll('.stat-item');
+                statItems.forEach(function(item, i) {
+                    var valueEl = item.querySelector('.stat-value');
+                    var labelEl = item.querySelector('.stat-label');
+                    if (valueEl) { if (!saveData('stat-value-' + i, valueEl.textContent)) hasError = true; }
+                    if (labelEl) { if (!saveData('stat-label-' + i, labelEl.textContent)) hasError = true; }
+                });
+
+                // 保存景点标题和描述
+                var attractionCards = document.querySelectorAll('.attraction-card');
+                attractionCards.forEach(function(card, i) {
+                    var titleEl = card.querySelector('.attraction-title');
+                    var descEl = card.querySelector('.attraction-desc');
+                    if (titleEl) {
+                        if (!saveData('attraction-title-' + i, titleEl.textContent)) hasError = true;
+                        card.setAttribute('data-title', titleEl.textContent);
+                    }
+                    if (descEl) {
+                        if (!saveData('attraction-desc-' + i, descEl.textContent)) hasError = true;
+                        card.setAttribute('data-desc', descEl.textContent);
+                    }
+                });
+
+                // 保存美食名称和描述
+                var foodCards = document.querySelectorAll('.food-card');
+                foodCards.forEach(function(card, i) {
+                    var nameEl = card.querySelector('.food-name');
+                    var descEl = card.querySelector('.food-desc');
+                    if (nameEl) {
+                        if (!saveData('food-name-' + i, nameEl.textContent)) hasError = true;
+                        card.setAttribute('data-title', nameEl.textContent);
+                    }
+                    if (descEl) {
+                        if (!saveData('food-desc-' + i, descEl.textContent)) hasError = true;
+                        card.setAttribute('data-desc', descEl.textContent);
+                    }
+                });
+
+                if (callback) callback(!hasError);
+            }
+
+            // === 执行保存并提示 ===
+            function doSave() {
+                saveToStorage(function(success) {
+                    if (success) {
+                        markSaved();
+                        showToast('保存成功！', false);
+                    } else {
+                        showToast('保存失败：存储空间不足', true);
+                    }
+                });
+            }
+
+            // === 切换编辑模式 ===
+            function toggleEditMode() {
+                isEditMode = !isEditMode;
+                var btn = document.getElementById('edit-mode-btn');
+                var body = document.body;
+
+                if (isEditMode) {
+                    btn.textContent = '退出编辑';
+                    btn.classList.add('active');
+                    body.classList.add('edit-mode');
+
+                    // 设置contenteditable
+                    document.querySelectorAll('.city-intro > p').forEach(function(p) {
+                        p.contentEditable = 'true';
+                    });
+                    document.querySelectorAll('.attraction-title').forEach(function(t) {
+                        t.contentEditable = 'true';
+                    });
+                    document.querySelectorAll('.food-name').forEach(function(n) {
+                        n.contentEditable = 'true';
+                    });
+                    document.querySelectorAll('.attraction-desc').forEach(function(d) {
+                        d.contentEditable = 'true';
+                    });
+                    document.querySelectorAll('.food-desc').forEach(function(d) {
+                        d.contentEditable = 'true';
+                    });
+                    document.querySelectorAll('.stat-value').forEach(function(v) {
+                        v.contentEditable = 'true';
+                    });
+                    document.querySelectorAll('.stat-label').forEach(function(l) {
+                        l.contentEditable = 'true';
+                    });
+                } else {
+                    btn.textContent = '编辑模式';
+                    btn.classList.remove('active');
+                    body.classList.remove('edit-mode');
+
+                    // 移除contenteditable
+                    document.querySelectorAll('.city-intro > p').forEach(function(p) {
+                        p.contentEditable = 'false';
+                    });
+                    document.querySelectorAll('.attraction-title').forEach(function(t) {
+                        t.contentEditable = 'false';
+                    });
+                    document.querySelectorAll('.food-name').forEach(function(n) {
+                        n.contentEditable = 'false';
+                    });
+                    document.querySelectorAll('.attraction-desc').forEach(function(d) {
+                        d.contentEditable = 'false';
+                    });
+                    document.querySelectorAll('.food-desc').forEach(function(d) {
+                        d.contentEditable = 'false';
+                    });
+                    document.querySelectorAll('.stat-value').forEach(function(v) {
+                        v.contentEditable = 'false';
+                    });
+                    document.querySelectorAll('.stat-label').forEach(function(l) {
+                        l.contentEditable = 'false';
+                    });
+
+                    // 退出编辑模式前保存
+                    saveToStorage(function(success) {
+                        if (success) {
+                            markSaved();
+                        } else {
+                            showToast('保存失败：存储空间不足', true);
+                        }
+                    });
+                }
+            }
+
+            // === 替换图片功能 ===
+            function handleReplaceImage(targetKey) {
+                var input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.style.display = 'none';
+                document.body.appendChild(input);
+
+                input.addEventListener('change', function(e) {
+                    var file = e.target.files[0];
+                    if (!file) return;
+
+                    // 直接用Blob存储，不做任何压缩
+                    saveImageToDB('taian-img-' + targetKey, file, function(success) {
+                        if (success) {
+                            var img = document.querySelector('[data-edit-key="' + targetKey + '"]');
+                            if (img) {
+                                // 释放旧的ObjectURL
+                                if (img._objectUrl) URL.revokeObjectURL(img._objectUrl);
+                                var url = URL.createObjectURL(file);
+                                img._objectUrl = url;
+                                img.src = url;
+                            }
+                            // 同步更新卡片的 data-image 属性
+                            var card = img ? img.closest('.attraction-card, .food-card') : null;
+                            if (card && img) {
+                                card.setAttribute('data-image', img.src);
+                            }
+                            markUnsaved();
+                        } else {
+                            showToast('保存失败：存储空间不足', true);
+                        }
+                    });
+                    document.body.removeChild(input);
+                });
+
+                input.click();
+            }
+
+            // === 初始化 ===
+            document.addEventListener('DOMContentLoaded', function() {
+                // 恢复 localStorage 数据
+                restoreFromStorage();
+
+                var attractionCards = document.querySelectorAll('.attraction-card');
+                var foodCards = document.querySelectorAll('.food-card');
+                var modal = document.getElementById('modal-overlay');
+                var modalClose = document.getElementById('modal-close');
+                var modalImage = document.getElementById('modal-image');
+                var modalTitle = document.getElementById('modal-title');
+                var modalDesc = document.getElementById('modal-desc');
+
+                function openModal(title, imageSrc, desc) {
+                    modalTitle.textContent = title;
+                    modalImage.src = imageSrc;
+                    modalImage.alt = title;
+                    modalDesc.textContent = desc;
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeModal() {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+
+                // 从卡片打开弹窗
+                attractionCards.forEach(function(card) {
+                    card.addEventListener('click', function(e) {
+                        if (isEditMode) return;
+                        if (e.target.closest('.replace-img-btn')) return;
+                        var title = this.getAttribute('data-title');
+                        var image = this.getAttribute('data-image');
+                        var desc = this.getAttribute('data-desc');
+                        openModal(title, image, desc);
+                    });
+                });
+
+                foodCards.forEach(function(card) {
+                    card.addEventListener('click', function(e) {
+                        if (isEditMode) return;
+                        if (e.target.closest('.replace-img-btn')) return;
+                        var title = this.getAttribute('data-title');
+                        var image = this.getAttribute('data-image');
+                        var desc = this.getAttribute('data-desc');
+                        openModal(title, image, desc);
+                    });
+                });
+
+                modalClose.addEventListener('click', closeModal);
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) closeModal();
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') closeModal();
+                });
+
+                // 编辑模式按钮
+                document.getElementById('edit-mode-btn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleEditMode();
+                });
+
+                // 保存修改按钮
+                document.getElementById('save-btn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    doSave();
+                });
+
+                // 替换图片按钮
+                document.querySelectorAll('.replace-img-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var targetKey = this.getAttribute('data-target');
+                        handleReplaceImage(targetKey);
+                    });
+                });
+
+                // 未保存更改条上的保存按钮
+                document.getElementById('unsaved-save-btn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    doSave();
+                });
+
+                // contenteditable 输入时标记为未保存
+                document.addEventListener('input', function(e) {
+                    if (isEditMode && e.target.hasAttribute && e.target.hasAttribute('contenteditable')) {
+                        markUnsaved();
+                    }
+                });
+
+                // 页面关闭前确认提示
+                window.addEventListener('beforeunload', function(e) {
+                    if (hasUnsavedChanges) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                    }
+                });
+            });
+        })();
+
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'IMG' && !e.target.classList.contains('lightbox-img') && e.target.closest('.attraction-card, .food-card, .hero-section')) {
+                e.preventDefault();
+                e.stopPropagation();
+                var lb = document.getElementById('lightbox');
+                var lbImg = document.getElementById('lightbox-img');
+                lbImg.src = e.target.src;
+                lb.style.display = 'flex';
+            }
+        });
+    </script>
+    <div id="lightbox" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;cursor:pointer;justify-content:center;align-items:center;" onclick="this.style.display='none'">
+        <img id="lightbox-img" style="max-width:95%;max-height:95%;object-fit:contain;">
+    </div>
+</body>
+</html>
